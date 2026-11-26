@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: blitz-solana-terminal
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
