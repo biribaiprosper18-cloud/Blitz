@@ -42,7 +42,7 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 </main></div></div>
 <nav class="mobilebar"><button class="active" data-view="home"><b>⌂</b>Home</button><button data-view="trending"><b>↗</b>Trending</button><button data-view="sniper"><b>ϟ</b>Sniper</button><button data-view="wallets"><b>⌖</b>Wallets</button><button data-view="portfolio"><b>▤</b>Portfolio</button></nav>
 <div class="drawerShade" id="drawerShade"><div class="drawer"><div class="drawerhead"><div class="brand"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><button class="close" id="closeDrawer">×</button></div><nav class="drawerlinks"><button data-view="home">⌂ &nbsp; Home</button><button data-view="trending">↗ &nbsp; Trending</button><button data-view="newpairs">✧ &nbsp; New Pairs</button><button data-view="sniper">ϟ &nbsp; Sniper</button><button data-view="meme">◎ &nbsp; Meme Zone</button><button data-view="wallets">⌖ &nbsp; Wallet Tracker</button><button data-view="copy">▢ &nbsp; Copy Trade</button><button data-view="portfolio">▤ &nbsp; Portfolio</button></nav></div></div>
-<div class="modalShade" id="walletShade"><div class="modal"><div class="modalhead">Connect Wallet <button class="close" id="closeWallet">×</button></div><div class="modalbody"><div class="balance">● &nbsp; BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.</div><button class="phantom" id="phantom"><span class="phantomlogo">◉</span><span><strong>Phantom Wallet</strong><small>Connect using Phantom</small></span><span style="margin-left:auto;color:#63d9bb;font-size:28px">›</span></button><div class="terms">Demo preview: wallet connection is not active. Never share your recovery phrase or private key.</div></div></div></div>
+<div class="modalShade" id="walletShade"><div class="modal"><div class="modalhead">Connect Wallet <button class="close" id="closeWallet">×</button></div><div class="modalbody"><div class="balance">● &nbsp; BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.</div><button class="phantom" id="phantom"><span class="phantomlogo">◉</span><span><strong>Phantom Wallet</strong><small id="phantomHint">Connect securely with Phantom</small></span><span style="margin-left:auto;color:#63d9bb;font-size:28px">›</span></button><div class="terms">On iPhone, Phantom opens this site in its in-app browser. Then approve the connection in Phantom.<br><br>Connect securely through Phantom. BLITZ can view your public address and request approvals; it never sees your recovery phrase or private key.</div></div></div></div>
 <script>
 const coins=[{n:"Frog Engine",s:"FROGE",a:"🐸",age:"38s",mc:18200,v:94000,l:9100,h:86,c:22,ch:48},{n:"Blue Comet",s:"BCOMET",a:"☄️",age:"2m",mc:47200,v:221000,l:18400,h:214,c:41,ch:32},{n:"Pixel Ape",s:"PAPE",a:"🦍",age:"7m",mc:91300,v:510000,l:32000,h:592,c:68,ch:21},{n:"Night Shift",s:"SHIFT",a:"🌙",age:"19m",mc:214000,v:780000,l:54000,h:1040,c:91,ch:17},{n:"Turbo Toast",s:"TOAST",a:"🍞",age:"1h",mc:67000,v:190000,l:21000,h:386,c:54,ch:-8},{n:"Orbit Cat",s:"OCAT",a:"🐈",age:"3h",mc:382000,v:1300000,l:89000,h:2100,c:100,ch:12}];let chosen=0,filter="Trending",liveMode=false;
 const fmt=n=>n>=1e6?"$"+(n/1e6).toFixed(2)+"M":n>=1e3?"$"+(n/1e3).toFixed(1)+"K":"$"+n;
@@ -58,7 +58,90 @@ document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch
 document.getElementById("manual").onclick=()=>{manualbox.style.display="block";autobox.style.display="none";manual.classList.add("active");auto.classList.remove("active")};document.getElementById("auto").onclick=()=>{manualbox.style.display="none";autobox.style.display="block";auto.classList.add("active");manual.classList.remove("active")};
 document.getElementById("preview").onclick=()=>{let n=+amount.value;previewmsg.textContent=n>=.001&&n<=10?`Paper preview: ${n} SOL allocated to ${mint.value||coins[chosen].s}. No transaction sent.`:"Enter an amount from 0.001 to 10 SOL."};document.getElementById("saveauto").onclick=()=>automsg.textContent="Paper rules saved for this session. Automated execution remains disabled.";
 document.getElementById("addwallet").onclick=()=>{let v=walletaddr.value.trim();if(v.length<32){walletmsg.textContent="Enter a valid-looking Solana address.";return}watchlist.innerHTML+=`<div class="walletrow"><b>${v.slice(0,6)}…${v.slice(-5)}</b><span class="tag">LOCAL</span></div>`;walletmsg.textContent="Added to temporary watchlist. No chain lookup performed.";walletaddr.value=""};document.getElementById("copySave").onclick=()=>copymsg.textContent="Simulation rule saved for this session. No wallet is monitored and no trades execute.";
-document.getElementById("walletBtn").onclick=()=>document.getElementById("walletShade").style.display="flex";document.getElementById("closeWallet").onclick=()=>document.getElementById("walletShade").style.display="none";document.getElementById("phantom").onclick=()=>alert("Phantom connection is not active in this prototype. Never share your seed phrase or private key.");document.getElementById("walletShade").addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
+
+const walletBtn=document.getElementById("walletBtn");
+const walletShade=document.getElementById("walletShade");
+let phantomProvider=null, connectedAddress=null;
+function getPhantomProvider(){
+  const p=window.phantom?.solana || window.solana;
+  return p && p.isPhantom ? p : null;
+}
+function shortAddress(s){return s ? s.slice(0,4)+"…"+s.slice(-4) : "";}
+function setWalletConnected(pubkey){
+  connectedAddress=pubkey.toString();
+  walletBtn.textContent=shortAddress(connectedAddress);
+  walletBtn.title=connectedAddress+" · Click to disconnect";
+  document.getElementById("phantomHint").textContent="Connected: "+shortAddress(connectedAddress);
+  document.querySelector(".terms").textContent="Wallet connected. BLITZ will never ask for your recovery phrase or private key.";
+  document.querySelector(".balance").textContent="Connected wallet: "+connectedAddress;
+  walletShade.style.display="none";
+  loadWalletBalance();
+}
+async function loadWalletBalance(){
+  if(!connectedAddress)return;
+  try{
+    const r=await fetch("https://api.mainnet-beta.solana.com",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({jsonrpc:"2.0",id:1,method:"getBalance",params:[connectedAddress]})
+    });
+    const j=await r.json();
+    if(j.result && typeof j.result.value==="number"){
+      const sol=(j.result.value/1e9).toFixed(4);
+      const stat=document.querySelector("#view-home .stats .panel:last-child .statvalue");
+      if(stat)stat.textContent=sol+" SOL";
+      const note=document.querySelector("#view-home .stats .panel:last-child .statnote");
+      if(note)note.textContent="Connected Phantom wallet";
+    }
+  }catch(e){console.warn("Could not fetch public wallet balance",e);}
+}
+async function connectPhantom(){
+  phantomProvider=getPhantomProvider();
+  if(!phantomProvider){
+    const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if(isIOS){
+      const browseUrl="https://phantom.app/ul/browse/"+encodeURIComponent(window.location.href)+"?ref="+encodeURIComponent(window.location.origin);
+      window.location.href=browseUrl;
+      return;
+    }
+    alert("Phantom was not detected. Install the official Phantom browser extension, then reload BLITZ. Never enter your recovery phrase on this website.");
+    return;
+  }
+  try{
+    const response=await phantomProvider.connect();
+    const key=response?.publicKey || phantomProvider.publicKey;
+    if(!key)throw new Error("Phantom did not return a public address.");
+    setWalletConnected(key);
+  }catch(err){
+    if(err?.code===4001)return;
+    alert(err?.message || "Could not connect to Phantom. Please try again.");
+  }
+}
+async function disconnectPhantom(){
+  try{if(phantomProvider?.disconnect)await phantomProvider.disconnect();}catch(e){}
+  connectedAddress=null;
+  walletBtn.textContent="Connect wallet";
+  walletBtn.title="";
+  document.getElementById("phantomHint").textContent="Connect securely with Phantom";
+  document.querySelector(".terms").textContent="Connect securely through Phantom. BLITZ can view your public address and request approvals; it never sees your recovery phrase or private key.";
+  document.querySelector(".balance").textContent="BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.";
+  const stat=document.querySelector("#view-home .stats .panel:last-child .statvalue");
+  if(stat)stat.textContent="— SOL";
+  const note=document.querySelector("#view-home .stats .panel:last-child .statnote");
+  if(note)note.textContent="Not connected";
+}
+walletBtn.onclick=()=>{if(connectedAddress){if(confirm("Disconnect your Phantom wallet from BLITZ?"))disconnectPhantom();}else walletShade.style.display="flex";};
+document.getElementById("closeWallet").onclick=()=>walletShade.style.display="none";
+document.getElementById("phantom").onclick=connectPhantom;
+walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
+window.addEventListener("load",async()=>{
+  phantomProvider=getPhantomProvider();
+  if(phantomProvider){
+    try{const r=await phantomProvider.connect({onlyIfTrusted:true});const key=r?.publicKey||phantomProvider.publicKey;if(key)setWalletConnected(key);}catch(e){}
+    phantomProvider.on?.("accountChanged",key=>{if(key)setWalletConnected(key);else disconnectPhantom();});
+    phantomProvider.on?.("disconnect",disconnectPhantom);
+  }
+});
+
 async function loadLiveFeed(){const b=document.getElementById("refreshLive"),status=document.getElementById("feedStatus");b.disabled=true;b.textContent="Loading…";status.textContent="FETCHING LIVE DATA";try{const r=await fetch("/api/markets/latest");if(!r.ok)throw new Error("Market feed unavailable ("+r.status+")");const payload=await r.json();if(!payload.tokens||!payload.tokens.length)throw new Error("No Solana pairs returned by provider");coins.splice(0,coins.length,...payload.tokens.map(t=>({n:t.name||"Unknown token",s:t.symbol||"—",a:"◈",age:t.age||"—",mc:Number(t.marketCap||0),v:Number(t.volume24h||0),l:Number(t.liquidity||0),h:0,c:0,ch:Number(t.change24h||0),address:t.address||"",url:t.url||""})));chosen=0;liveMode=true;status.textContent="LIVE · DEXSCREENER";b.textContent="Refresh feed";render();detail();document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,10).map(t=>tokenrow(t,coins.indexOf(t))).join("");}catch(e){status.textContent="SAMPLE DATA · LIVE FEED FAILED";b.textContent="Retry live feed";alert(e.message+". The sample feed remains visible.")}finally{b.disabled=false}}
 document.getElementById("refreshLive").onclick=loadLiveFeed;
 render();detail();
