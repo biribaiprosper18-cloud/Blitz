@@ -1,23 +1,24 @@
-# BLITZ v0.6 — Unified site + first live market-data connection
+# BLITZ v0.7.2 — Wallet connection and balance reliability
 
-## What's new
-- Landing page and trading workspace remain one application.
-- Added server-side `/api/markets/latest` integration with the public DexScreener API.
-- Home > Market discovery > **Load live feed** fetches latest Solana token profiles and enriches them with pair market cap/FDV, 24h volume, liquidity, 24h price change and pair age.
-- 30-second server cache to reduce upstream requests.
-- If the provider is unavailable, the UI keeps the sample feed and shows a clear error.
+## Fixes
+- Solana wallet balance API now tries a primary RPC and a fallback RPC endpoint.
+- Supports both legacy SPL Token and Token-2022 accounts.
+- Adds a Refresh button in Portfolio so balances can be reloaded without disconnecting.
+- Explicit Node.js 20+ runtime requirement for Render.
+- Better error messaging when public RPC endpoints are rate-limited.
 
-## Run locally
-1. Install Node.js 18+.
-2. Run `npm install`.
-3. Run `npm start`.
-4. Open `http://localhost:3000`.
+## Deploy to the existing Render service
+1. Extract this ZIP.
+2. Replace all files in the GitHub repository connected to the existing Render service.
+3. Commit and push; wait for Render to finish deploying.
+4. Open `https://YOUR-EXISTING-DOMAIN/api/health` and confirm version `0.7.2`.
+5. Open the site inside Phantom's in-app browser on iPhone, connect, then open Portfolio and tap Refresh.
 
-## Deploy to existing Render service
-Replace the repository files with this project, commit and push. Keep the current Render service and domain; trigger a deploy of that existing service.
+## Optional production RPC
+For more reliable requests, add a Render environment variable named `SOLANA_RPC_URL` with an RPC URL from a provider you trust. Keep the URL private if it contains an API key. The app falls back to public RPC endpoints if this variable is not set.
 
-## Data limitations
-DexScreener's latest token-profiles endpoint is a discovery source, not a complete firehose of every brand-new Pump.fun launch. The current implementation only displays profile tokens for which DexScreener returns a Solana trading pair. Metrics are third-party market data and can lag or be incomplete. The app labels live-feed status and falls back to sample data if no usable results arrive.
-
-## Not enabled yet
-No Phantom wallet connection, transaction signing, automated execution, on-chain authority/rug scanner, wallet PnL analytics or copy trading is implemented. Do not enter seed phrases or private keys. Real trading requires independent transaction simulation, wallet-signed approval, spend caps, slippage limits, and an emergency stop.
+## Scope and security
+- Reads actual public on-chain SOL and SPL/Token-2022 balances.
+- Does not calculate full USD portfolio value yet.
+- Does not request signatures or send transactions.
+- Never enter or share a seed phrase or private key.

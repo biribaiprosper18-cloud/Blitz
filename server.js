@@ -8,7 +8,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 let marketCache = { at: 0, tokens: null };
 const CACHE_MS = 30_000;
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.6.0', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.7.2', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
@@ -65,6 +65,92 @@ app.get('/api/markets/latest', async (_req, res) => {
     res.json({ source: 'DexScreener', cached: false, updatedAt: marketCache.at, tokens });
   } catch (error) {
     res.status(502).json({ error: 'Live Solana market feed is temporarily unavailable', detail: error.message });
+  }
+});
+
+
+// Public, read-only wallet portfolio endpoint. No signing or private keys are involved.
+app.get('/api/wallet/:address', async (req, res) => {
+  const address = String(req.params.address || '');
+  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)) {
+    return res.status(400).json({ error: 'Invalid Solana public address' });
+  }
+
+  // Public read-only RPC endpoints. Try a fallback if the first endpoint is rate-limited.
+  const rpcUrls = [
+    process.env.SOLANA_RPC_URL,
+    'https://api.mainnet-beta.solana.com',
+    'https://solana-rpc.publicnode.com'
+  ].filter(Boolean);
+
+  async function rpc(method, params) {
+    let lastError;
+    for (const url of rpcUrls) {
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+          signal: AbortSignal.timeout(12000)
+        });
+        if (!response.ok) throw new Error(`RPC HTTP ${response.status}`);
+        const payload = await response.json();
+        if (payload.error) throw new Error(payload.error.message || 'Solana RPC error');
+        return payload.result;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error('All Solana RPC endpoints failed');
+  }
+
+  try {
+    const tokenPrograms = [
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb'
+    ];
+    const [balance, legacyAccounts, token2022Accounts] = await Promise.all([
+      rpc('getBalance', [address, { commitment: 'confirmed' }]),
+      rpc('getTokenAccountsByOwner', [
+        address, { programId: tokenPrograms[0] },
+        { encoding: 'jsonParsed', commitment: 'confirmed' }
+      ]),
+      rpc('getTokenAccountsByOwner', [
+        address, { programId: tokenPrograms[1] },
+        { encoding: 'jsonParsed', commitment: 'confirmed' }
+      ]).catch(() => ({ value: [] }))
+    ]);
+
+    const tokens = [...(legacyAccounts?.value || []), ...(token2022Accounts?.value || [])]
+      .map(item => {
+        const info = item.account?.data?.parsed?.info;
+        const amount = info?.tokenAmount;
+        return {
+          mint: info?.mint || '',
+          amount: amount?.uiAmountString || '0',
+          decimals: amount?.decimals ?? 0,
+          rawAmount: amount?.amount || '0'
+        };
+      })
+      .filter(t => t.mint && t.rawAmount !== '0')
+      .slice(0, 200);
+
+    res.set('Cache-Control', 'no-store');
+    res.json({
+      address,
+      sol: Number(balance?.value || 0) / 1e9,
+      lamports: Number(balance?.value || 0),
+      tokenCount: tokens.length,
+      tokens,
+      rpcStatus: 'ok',
+      updatedAt: Date.now()
+    });
+  } catch (error) {
+    res.status(502).json({
+      error: 'Solana RPC could not return this wallet balance',
+      detail: error.message,
+      hint: 'Try again in a few seconds. Public RPC endpoints can be rate-limited.'
+    });
   }
 });
 
