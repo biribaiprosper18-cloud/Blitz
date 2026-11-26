@@ -41,7 +41,18 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 <div class="panel"><div class="panelhead"><h2>Recently created pairs</h2></div><div id="newlist"></div></div></section>
 <section class="view" id="view-sniper"><div class="heading"><div><div class="label">TRADE EXECUTION</div><h1>Sniper</h1><div class="desc">Configure manual entries and automated rules. Preview only.</div></div><span class="badge">PAPER MODE</span></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Order configuration</h2></div><div class="filters"><button class="active" id="manual">Manual Buy</button><button id="auto">Auto Sniper</button></div><div id="manualbox"><label class="field">Token mint address<input id="mint" placeholder="Paste token mint"></label><div class="two"><label class="field">Buy amount (SOL)<input id="amount" type="number" min=".001" value=".1" step=".001"></label><label class="field">Slippage<select><option>10%</option><option>15%</option><option>20%</option></select></label></div><div class="two"><label class="field">Priority fee<select><option>High</option><option>Very high</option></select></label><label class="field">Max price impact<select><option>5%</option><option>10%</option></select></label></div><button class="btn wide" id="preview">Preview paper buy</button><div class="note" id="previewmsg">No transaction will be sent.</div></div><div id="autobox" style="display:none"><div class="two"><label class="field">Max market cap ($)<input type="number" value="35000"></label><label class="field">Minimum liquidity ($)<input type="number" value="8000"></label></div><div class="two"><label class="field">Max buy / token (SOL)<input type="number" value=".1"></label><label class="field">Daily cap (SOL)<input type="number" value=".5"></label></div><div class="switch"><span>Require mint authority revoked</span><input type="checkbox" checked></div><div class="switch"><span>Require freeze authority revoked</span><input type="checkbox" checked></div><div class="switch"><span>Block concentrated holders</span><input type="checkbox" checked></div><button class="btn wide" id="saveauto">Save paper rules</button><div class="note" id="automsg">Automation remains disabled.</div></div></div><div class="stack"><div class="panel"><div class="panelhead"><h2>Execution safeguards</h2></div><div class="row"><span>Trading mode</span><b class="up">Paper only</b></div><div class="row"><span>Wallet signing</span><b>Disabled</b></div><div class="row"><span>Daily loss limit</span><b>Not set</b></div><div class="row"><span>Emergency stop</span><b>Planned</b></div></div><div class="panel"><h2 style="font-size:13px">Execution preview</h2><div class="empty">Order details appear here after preview.</div></div></div></div></section>
 <section class="view" id="view-meme"><div class="heading"><div><div class="label">MEME RADAR</div><h1>Meme Zone</h1><div class="desc">Browse token launches by lifecycle stage.</div></div></div><div class="panel"><div class="filters"><button class="active">Trending</button><button>New Pairs</button><button>Degen Zone</button><button>New Creations</button><button>Graduating</button><button>Graduated</button></div><div class="empty">Live market indexing will populate this section.</div></div></section>
-<section class="view" id="view-wallets"><div class="heading"><div><div class="label">ON-CHAIN RESEARCH</div><h1>Wallet Tracker</h1><div class="desc">Add addresses to a local watchlist.</div></div></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Track a wallet</h2></div><input class="search" id="walletaddr" placeholder="Paste Solana wallet address"><button class="btn wide" id="addwallet">Add to watchlist</button><div class="note" id="walletmsg">Address stays in this page session; no chain lookup is performed.</div><div id="watchlist" style="margin-top:14px"><div class="walletrow"><b>EarlyBird.sol</b><span class="tag">SAMPLE</span></div><div class="walletrow"><b>BlueWhale.sol</b><span class="tag">SAMPLE</span></div></div></div><div class="panel"><div class="panelhead"><h2>Trader Lens</h2></div><div class="row"><span>Win rate</span><b>—</b></div><div class="row"><span>Realized PnL</span><b>—</b></div><div class="row"><span>Average hold time</span><b>—</b></div><div class="note">Wallet analytics require an on-chain data provider.</div></div></div></section>
+<section class="view" id="view-wallets"><div class="heading"><div><div class="label">ON-CHAIN RESEARCH</div><h1>Wallet Tracker</h1><div class="desc">Add addresses to a local watchlist.</div></div></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Track a wallet</h2></div><input class="search" id="walletaddr" placeholder="Paste Solana wallet address"><button class="btn wide" id="addwallet">Add to watchlist</button><div class="note" id="walletmsg">Address stays in this page session; no chain lookup is performed.</div><div id="watchlist" style="margin-top:14px"><div class="walletrow"><b>EarlyBird.sol</b><span class="tag">SAMPLE</span></div><div class="walletrow"><b>BlueWhale.sol</b><span class="tag">SAMPLE</span></div></div></div><div class="panel"><div class="panelhead"><h2>Send SOL</h2><span class="badge">PHANTOM APPROVAL</span></div>
+<div class="row"><span>Connected wallet</span><b id="sendFrom">Not connected</b></div>
+<div class="row"><span>Available balance</span><b id="sendBalance">— SOL</b></div>
+<label class="field">Recipient Solana address<input id="sendRecipient" inputmode="text" autocomplete="off" placeholder="Paste recipient public address"></label>
+<label class="field">Amount (SOL)<input id="sendAmount" type="number" min="0" step="0.000000001" placeholder="0.00" inputmode="decimal"></label>
+<div class="note" id="sendReserve">A small SOL reserve and the network fee will be kept in your wallet.</div>
+<div class="row"><span>Estimated network fee</span><b id="sendFee">Calculating when ready</b></div>
+<button class="btn wide" id="sendSolBtn" type="button">Review &amp; send with Phantom</button>
+<div class="note" id="sendMessage" aria-live="polite">Connect Phantom first. BLITZ never receives your private key or recovery phrase.</div>
+<div id="sendTxLink" class="note"></div>
+</div>
+<div class="panel"><div class="panelhead"><h2>Trader Lens</h2></div><div class="row"><span>Win rate</span><b>—</b></div><div class="row"><span>Realized PnL</span><b>—</b></div><div class="row"><span>Average hold time</span><b>—</b></div><div class="note">Wallet analytics require an on-chain data provider.</div></div></div></section>
 <section class="view" id="view-copy"><div class="heading"><div><div class="label">RULE-BASED MIRRORING</div><h1>Copy Trade</h1><div class="desc">Set copy-trading parameters for a future simulation.</div></div><span class="badge">NOT ACTIVE</span></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Copy settings</h2></div><label class="field">Wallet address<input placeholder="Wallet to follow"></label><div class="two"><label class="field">Fixed buy size (SOL)<input type="number" value=".05"></label><label class="field">Daily cap (SOL)<input type="number" value=".25"></label></div><div class="switch"><span>Mirror buys</span><input type="checkbox" checked></div><div class="switch"><span>Mirror sells</span><input type="checkbox" checked></div><div class="switch"><span>Skip low liquidity</span><input type="checkbox" checked></div><button class="btn wide" id="copySave">Save simulation rule</button><div class="note" id="copymsg">No copy trades are running.</div></div><div class="panel"><h2 style="font-size:13px">Safety checklist</h2><div class="row"><span>Per-wallet spend cap</span><b>Required</b></div><div class="row"><span>Token denylist</span><b>Recommended</b></div><div class="row"><span>Slippage limits</span><b>Required</b></div><div class="row"><span>Wallet-signed approval</span><b>Required</b></div></div></div></section>
 <section class="view" id="view-portfolio"><div class="heading"><div><div class="label">PERFORMANCE</div><h1>Portfolio</h1><div class="desc">Positions and PnL overview.</div></div></div><div class="stats"><div class="panel"><div class="statlabel">TOTAL VALUE</div><div class="statvalue">—</div><div class="statnote">Wallet not connected</div></div><div class="panel"><div class="statlabel">UNREALIZED PNL</div><div class="statvalue">—</div><div class="statnote">No positions</div></div><div class="panel"><div class="statlabel">REALIZED PNL</div><div class="statvalue">—</div><div class="statnote">No history</div></div><div class="panel"><div class="statlabel">OPEN POSITIONS</div><div class="statvalue">0</div><div class="statnote">Paper mode</div></div></div><div class="panel"><div class="panelhead"><h2>Token holdings</h2><div style="display:flex;gap:7px;align-items:center"><span class="badge" id="holdingsCount">WAITING FOR WALLET</span><button class="btn" id="refreshWallet" style="padding:6px 9px;font-size:9px">Refresh</button></div></div><div id="holdings"><div class="empty">Connect Phantom to load your SOL and SPL token balances.</div></div><div class="note" id="portfolioUpdated"></div></div></section>
 </main></div></div>
@@ -94,7 +105,7 @@ async function loadWalletBalance(){
     const response=await fetch("/api/wallet/"+encodeURIComponent(connectedAddress),{cache:"no-store"});
     const data=await response.json();
     if(!response.ok)throw new Error(data.detail || data.error || "Wallet data request failed");
-    const sol=Number(data.sol||0);
+    const sol=Number(data.sol||0); window.blitzSolBalance=sol; updateSendWallet();
     if(homeStat)homeStat.textContent=sol.toLocaleString(undefined,{maximumFractionDigits:4})+" SOL";
     if(homeNote)homeNote.textContent="Live balance · "+shortAddress(connectedAddress);
     const portfolioStats=document.querySelectorAll("#view-portfolio .stats .panel");
@@ -220,6 +231,76 @@ function startLaunchStream(){
   window.addEventListener('beforeunload',()=>stream.close(),{once:true});
 }
 window.blitzLaunches=[];
+
+
+const SEND_RESERVE_SOL = 0.00001; // small safety buffer in addition to estimated network fee
+let sendWeb3 = null;
+async function getSendWeb3(){
+  if(sendWeb3)return sendWeb3;
+  const mod=await import('https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.4/+esm');
+  sendWeb3=mod;
+  return mod;
+}
+function updateSendWallet(){
+  const from=document.getElementById('sendFrom');
+  const bal=document.getElementById('sendBalance');
+  if(from)from.textContent=connectedAddress?connectedAddress.toBase58?connectedAddress.toBase58():String(connectedAddress):'Not connected';
+  if(bal)bal.textContent=window.blitzSolBalance!==undefined?Number(window.blitzSolBalance).toFixed(6)+' SOL':'Refresh balance';
+}
+async function sendSolFromPhantom(){
+  const msg=document.getElementById('sendMessage');
+  const btn=document.getElementById('sendSolBtn');
+  const link=document.getElementById('sendTxLink');
+  const recipientText=document.getElementById('sendRecipient').value.trim();
+  const amountSol=Number(document.getElementById('sendAmount').value);
+  link.textContent='';
+  if(!connectedAddress||!phantomProvider){msg.textContent='Connect Phantom before sending.';return;}
+  if(!Number.isFinite(amountSol)||amountSol<=0){msg.textContent='Enter a valid SOL amount greater than zero.';return;}
+  btn.disabled=true;btn.textContent='Preparing transaction…';msg.textContent='Checking recipient, balance and network fee…';
+  try{
+    const web3=await getSendWeb3();
+    const connection=new web3.Connection(web3.clusterApiUrl('mainnet-beta'),'confirmed');
+    const recipient=new web3.PublicKey(recipientText);
+    const owner=new web3.PublicKey(connectedAddress.toBase58?connectedAddress.toBase58():String(connectedAddress));
+    if(recipient.equals(owner))throw new Error('Recipient address is the same as your connected wallet.');
+    const lamports=Math.floor(amountSol*web3.LAMPORTS_PER_SOL);
+    if(!Number.isSafeInteger(lamports)||lamports<=0)throw new Error('Amount is too small or invalid.');
+    const {blockhash,lastValidBlockHeight}=await connection.getLatestBlockhash('confirmed');
+    const tx=new web3.Transaction({feePayer:owner,recentBlockhash:blockhash}).add(
+      web3.SystemProgram.transfer({fromPubkey:owner,toPubkey:recipient,lamports})
+    );
+    const message=tx.compileMessage();
+    const feeResult=await connection.getFeeForMessage(message,'confirmed');
+    const feeLamports=Number(feeResult?.value);
+    if(!Number.isFinite(feeLamports)||feeLamports<0)throw new Error('Could not estimate the network fee. Try again.');
+    const balanceLamports=await connection.getBalance(owner,'confirmed');
+    const required=lamports+feeLamports+Math.ceil(SEND_RESERVE_SOL*web3.LAMPORTS_PER_SOL);
+    if(required>balanceLamports){
+      const maxSol=Math.max(0,(balanceLamports-feeLamports-Math.ceil(SEND_RESERVE_SOL*web3.LAMPORTS_PER_SOL))/web3.LAMPORTS_PER_SOL);
+      throw new Error('Insufficient SOL after fees and reserve. Maximum sendable now: '+maxSol.toFixed(6)+' SOL.');
+    }
+    const feeText=(feeLamports/web3.LAMPORTS_PER_SOL).toFixed(6);
+    document.getElementById('sendFee').textContent=feeText+' SOL';
+    const confirmed=confirm('Review your transfer:\n\nTo: '+recipient.toBase58()+'\nAmount: '+amountSol+' SOL\nEstimated fee: '+feeText+' SOL\nReserve kept: '+SEND_RESERVE_SOL+' SOL\n\nPhantom will ask you to approve. Continue?');
+    if(!confirmed){msg.textContent='Transfer cancelled before signing.';return;}
+    btn.textContent='Waiting for Phantom approval…';msg.textContent='Review the recipient and amount in Phantom. Approve only if they are correct.';
+    const result=await phantomProvider.signAndSendTransaction(tx,{preflightCommitment:'confirmed'});
+    const signature=result?.signature||result;
+    if(!signature)throw new Error('Phantom did not return a transaction signature.');
+    msg.textContent='Transaction submitted. Waiting for confirmation…';
+    await connection.confirmTransaction({signature,blockhash,lastValidBlockHeight},'confirmed');
+    msg.textContent='Transfer confirmed.';
+    link.innerHTML='<a href="https://solscan.io/tx/'+encodeURIComponent(signature)+'" target="_blank" rel="noopener noreferrer">View transaction on Solscan ↗</a>';
+    document.getElementById('sendAmount').value='';
+    if(typeof loadWalletBalance==='function')await loadWalletBalance();
+    if(typeof window.blitzSolBalance==='number')document.getElementById('sendBalance').textContent=window.blitzSolBalance.toFixed(6)+' SOL';
+  }catch(error){
+    msg.textContent='Transfer not completed: '+String(error.message||error);
+  }finally{
+    btn.disabled=false;btn.textContent='Review & send with Phantom';
+  }
+}
+document.getElementById('sendSolBtn').addEventListener('click',sendSolFromPhantom);
 
 async function loadLiveSolPrice(){
   const value=document.getElementById("solPriceValue");
