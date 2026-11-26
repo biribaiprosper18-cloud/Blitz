@@ -13,6 +13,101 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 .drawerShade,.modalShade{display:none;position:fixed;inset:0;background:#0009;z-index:30}.drawer{position:absolute;left:0;top:0;bottom:0;width:min(82vw,340px);background:#050906;border-right:1px solid #1d5871;padding:20px}.drawerhead{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line)}.drawerlinks{display:grid;margin-top:24px}.drawerlinks button{background:none;border:0;color:#a4dcec;text-align:left;font-size:17px;padding:15px 8px}.close{background:none;border:0;color:#b5ff9f;font-size:27px}.modalShade{align-items:center;justify-content:center;padding:18px}.modal{width:min(100%,550px);background:#081630;border:1px solid #28718a;border-radius:17px;overflow:hidden}.modalhead{padding:20px 23px;border-bottom:1px solid #24536a;display:flex;justify-content:space-between;font-size:21px}.modalbody{padding:23px}.balance{border:1px solid #24705f;background:#0b2939;border-radius:12px;padding:17px;color:#75c9f4;line-height:1.5;margin-bottom:20px}.phantom{width:100%;display:flex;align-items:center;gap:15px;text-align:left;border:1px solid #399b87;background:#0d2b3b;color:white;border-radius:13px;padding:17px}.phantomlogo{width:57px;height:57px;border-radius:14px;background:#14505a;display:grid;place-items:center;color:#69e1bc;font-size:28px}.phantom strong{display:block;font-size:18px}.phantom small{display:block;color:#67c5ed;margin-top:5px}.terms{text-align:center;color:#7599b5;font-size:11px;margin-top:20px}
 @media(max-width:900px){.terminalbar{grid-template-columns:185px 1fr}.columns{grid-template-columns:1fr}.stack{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.top{height:68px;padding:0 12px}.brand{font-size:21px}.mark{width:38px;height:38px}.topright{gap:6px}.status{display:none}.top .btn{padding:9px 10px;font-size:12px;white-space:nowrap}.hamb{display:block;padding:7px 9px}.hero{min-height:calc(100vh - 68px);padding:65px 18px 50px}.hero h1{font-size:clamp(42px,11vw,59px);letter-spacing:-2px;line-height:1.02;margin-bottom:28px}.eyebrow{font-size:13px;padding:9px 12px;margin-bottom:30px}.hero p{font-size:17px;line-height:1.6;margin-bottom:30px}.walletprompt{font-size:14px;padding-top:22px}.cta-row{flex-direction:column;max-width:280px;margin:22px auto 0}.section{padding:48px 18px}.section h2{font-size:27px}.featuregrid{grid-template-columns:1fr}.terminalbar{display:block;min-height:0}aside{display:none}main{padding:14px 10px 80px}.heading h1{font-size:20px}.stats{grid-template-columns:repeat(2,1fr);gap:7px}.panel{padding:10px}.statvalue{font-size:17px}.stack{grid-template-columns:1fr}.tablehead,.tokenrow{grid-template-columns:minmax(125px,1.5fr) .75fr .7fr}.tablehead span:last-child,.curvecol{display:none}.mobilebar{display:flex;position:fixed;bottom:7px;left:7px;right:7px;z-index:15;justify-content:space-around;background:#07192df5;border:1px solid #1d5871;border-radius:13px;padding:7px 2px;backdrop-filter:blur(14px)}.mobilebar button{border:0;background:transparent;color:#91b9cd;font-size:8px}.mobilebar b{display:block;font-size:16px;margin-bottom:2px}.mobilebar button.active{color:var(--cyan2)}.drawerlinks{margin-top:12px}.drawerlinks button{font-size:16px;padding:13px 8px}}
+
+/* BLITZ 1.0 — clean exchange-inspired visual system */
+:root{
+ --bg:#f7f7ff;--navy:#ffffff;--panel:#ffffff;--panel2:#f0efff;--line:#e1e1f2;
+ --cyan:#4f46e5;--cyan2:#3730a3;--mint:#16a34a;--text:#171638;--muted:#777794;
+ --red:#dc4545;--amber:#c88719;
+}
+body{background:#fff;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.top{background:#ffffffed;border-bottom:1px solid #e9e8f6;box-shadow:0 2px 14px #27235a08}
+.mark{background:#eef0ff;border:1px solid #d9dcff;color:#4f46e5;border-radius:12px}
+.brand small{color:#7774b8}
+.status{color:#4f46e5;border:1px solid #dcdcff;background:#f5f5ff}
+.btn,.cta{background:#4f46e5;border:1px solid #4f46e5;color:#fff;border-radius:8px;box-shadow:0 4px 10px #4f46e51a}
+.btn:hover,.cta:hover{background:#3730a3}
+.hamb{background:#f4f4ff;color:#3730a3;border:1px solid #e0e0f5}
+.hero{min-height:640px;background:linear-gradient(120deg,#fff 0%,#fbfbff 60%,#f1f0ff 100%);text-align:left;justify-content:flex-start;padding:90px max(24px,calc((100vw - 1160px)/2));}
+.hero:before{background:radial-gradient(circle at 80% 43%,#dcdcff 0,transparent 29%),radial-gradient(circle at 90% 65%,#e9e8ff 0,transparent 25%);opacity:.8}
+.orb{width:430px;height:430px;left:79%;top:48%;border:1px solid #b7b5f5;box-shadow:0 0 0 28px #eeeeff,0 0 0 56px #f7f6ff}
+.orb:before,.orb:after{background:#4f46e5;box-shadow:0 0 0 8px #4f46e51a}
+.particle{background:#625be9;box-shadow:0 0 0 7px #4f46e51a}
+.hero-inner{max-width:590px;text-align:left}
+.eyebrow{border:1px solid #e1e0ff;background:#f5f4ff;color:#4f46e5;border-radius:6px;padding:9px 13px;font-size:11px;letter-spacing:.7px;margin-bottom:22px}
+.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.04;letter-spacing:-2.6px;margin:0 0 22px;color:#1c1a43}
+.gradient{background:linear-gradient(90deg,#4f46e5,#7772ef);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:17px;color:#777794;line-height:1.7;max-width:530px;margin:0 0 24px}
+.walletprompt{border-top:1px solid #e3e2f5;color:#777794;font-size:13px;padding:18px 0 0;max-width:510px;margin:0}
+.walletprompt b{color:#4f46e5}
+.cta-row{justify-content:flex-start;margin-top:22px}
+.cta.secondary{background:#fff;color:#4f46e5;border:1px solid #d8d7f5;box-shadow:none}
+.section{max-width:1160px;padding:65px 24px}
+.section h2{color:#211f4c;letter-spacing:-.8px}
+.section>p{color:#777794}
+.feature{background:#fff;border:1px solid #e6e5f5;border-radius:12px;box-shadow:0 8px 28px #28245c08}
+.feature .ico{color:#4f46e5}.feature h3{color:#24224f}.feature p{color:#777794}
+.footer{border-top:1px solid #e5e4f4;color:#777794;background:#f8f8ff}
+#terminal{background:#f7f7fc}
+aside{background:#fff;border-right:1px solid #e5e4f4}
+.navtitle{color:#9998b2}
+.nav button{color:#666684}
+.nav button:hover,.nav button.active{background:#f1f0ff;border-color:#dedcff;color:#3730a3}
+.nav button.active{box-shadow:inset 2px 0 #4f46e5}
+.sidefoot{background:#f7f6ff;border-color:#e3e1fa}.sidefoot b{color:#4f46e5}
+main{background:#f7f7fc}
+.label{color:#4f46e5}
+.desc{color:#777794}
+.badge{color:#4f46e5;border:1px solid #dedcff;background:#f5f4ff}
+.panel{background:#fff;border:1px solid #e5e4f2;border-radius:12px;box-shadow:0 5px 20px #28245c07}
+.statlabel,.tablehead{color:#8584a0}
+.statvalue,.number,.tokenname,.panelhead h2{color:#24224b}
+.statnote,.tiny,.ticker,.note{color:#85849d}
+.up{color:#169b5a}.down{color:#dc4545}
+.filters button{background:#fff;color:#6e6c8c;border-color:#e2e1f2}
+.filters button.active{background:#4f46e5;border-color:#4f46e5;color:#fff}
+.search,.field input,.field select{background:#fff;border:1px solid #deddee;color:#24224b}
+.search:focus,.field input:focus{outline:2px solid #c8c5ff;border-color:#7772ef}
+.tokenrow{border-top:1px solid #efeff7}
+.tokenrow:hover,.tokenrow.selected{background:#f6f5ff}
+.avatar{background:#f0efff;border:1px solid #dfddff;color:#4f46e5}
+.row,.walletrow,.switch{border-bottom:1px solid #eeeeF6}
+.curve{background:#e9e8f6}.curve i{background:linear-gradient(90deg,#4f46e5,#9a96ff)}
+.pill{color:#a14c72;border-color:#f0c9dc}
+.tag{color:#168653;border-color:#c9ead8}
+.empty{color:#85849d}
+.drawer{background:#fff;border-right:1px solid #e4e3f3}
+.drawerlinks button{color:#45436f}
+.close{color:#4f46e5}
+.modal{background:#fff;border:1px solid #e3e1f3}
+.modalhead{border-bottom:1px solid #e8e7f4;color:#25234d}
+.modalbody{color:#25234d}
+.balance{background:#f5f4ff;border:1px solid #e0defb;color:#4f46e5}
+.phantom{background:#f5f4ff;border:1px solid #dcd9fb;color:#25234d}
+.phantomlogo{background:#e6e4ff;color:#4f46e5}
+.phantom small,.terms{color:#85849d}
+.mobilebar{background:#fffffffa;border:1px solid #e0def2;box-shadow:0 6px 25px #26235a14}
+.mobilebar button{color:#8887a4}
+.mobilebar button.active{color:#4f46e5}
+@media(max-width:650px){
+ .hero{min-height:660px;padding:64px 22px 54px;align-items:flex-start}
+ .hero-inner{max-width:100%;padding-top:18px}
+ .hero h1{font-size:clamp(40px,10vw,56px);color:#1c1a43}
+ .hero p{font-size:16px}
+ .orb{width:240px;height:240px;left:83%;top:80%;opacity:.45}
+ .cta-row{max-width:320px}
+ .section{padding:48px 18px}
+ .panel{box-shadow:0 3px 14px #28245c06}
+ .mobilebar{bottom:7px}
+}
+
+
+.wallet-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wallet-choice{display:flex;align-items:center;gap:11px;min-height:62px;padding:11px;border:1px solid #dedcff;border-radius:10px;background:#fff;color:#24224b;text-align:left}
+.wallet-choice:disabled{opacity:.48;cursor:not-allowed}
+.wallet-choice .wallet-icon{width:34px;height:34px;border-radius:9px;background:#f0efff;display:grid;place-items:center;color:#4f46e5;font-weight:800}
+.wallet-choice strong{display:block;font-size:12px}.wallet-choice small{display:block;color:#85849d;font-size:9px;margin-top:3px}
+@media(max-width:480px){.wallet-options{grid-template-columns:1fr}}
 </style></head><body>
 <header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
 <div class="landing" id="landing">
@@ -20,8 +115,8 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 <div class="eyebrow">ϟ &nbsp; Built for focused Solana traders</div>
 <h1>Precision<br>Execution.<br><span class="gradient">Unmatched<br class="mobilebreak"> Intelligence.</span></h1>
 <p>BLITZ brings live token discovery, market tracking, automated sniper tools, wallet research, and portfolio activity into one focused workspace.</p>
-<div class="walletprompt">▣ &nbsp; Connect your <b>Phantom wallet</b> from the header to unlock the trading tools.</div>
-<div class="cta-row"><button class="cta" id="enterApp">Enter BLITZ workspace</button><button class="cta secondary" id="featuresBtn">Explore features</button></div>
+<div class="walletprompt">▣ &nbsp; Connect a <b>Solana wallet</b> to unlock the BLITZ workspace.</div>
+<div class="cta-row"><button class="cta" id="enterApp">Connect wallet to continue</button><button class="cta secondary" id="featuresBtn">Explore features</button></div>
 </div></section>
 <section class="section" id="features"><div class="eyebrow">ONE FOCUSED WORKSPACE</div><h2>Everything you need to read the market.</h2><p>Discover launches, research wallets and prepare trades from one clean terminal.</p><div class="featuregrid">
 <div class="feature"><div class="ico">↗</div><h3>Trending & New Pairs</h3><p>Surface fresh launches and tokens gaining momentum, with liquidity and market activity in view.</p></div><div class="feature"><div class="ico">ϟ</div><h3>Sniper Tools</h3><p>Configure manual entries, automated rules, exits and risk limits in a dedicated workspace.</p></div><div class="feature"><div class="ico">◎</div><h3>Meme Zone</h3><p>Browse trending memes, new creations, graduating tokens and early-stage launches.</p></div><div class="feature"><div class="ico">▢</div><h3>Copy Trade</h3><p>Build wallet-following rules with per-wallet allocations and safety controls.</p></div><div class="feature"><div class="ico">⌖</div><h3>Wallet Intelligence</h3><p>Review wallet activity and performance when live data is connected.</p></div><div class="feature"><div class="ico">▤</div><h3>Portfolio</h3><p>Keep positions, PnL and trading history together in one place.</p></div></div></section>
@@ -58,16 +153,16 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 </main></div></div>
 <nav class="mobilebar"><button class="active" data-view="home"><b>⌂</b>Home</button><button data-view="trending"><b>↗</b>Trending</button><button data-view="sniper"><b>ϟ</b>Sniper</button><button data-view="wallets"><b>⌖</b>Wallets</button><button data-view="portfolio"><b>▤</b>Portfolio</button></nav>
 <div class="drawerShade" id="drawerShade"><div class="drawer"><div class="drawerhead"><div class="brand"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><button class="close" id="closeDrawer">×</button></div><nav class="drawerlinks"><button data-view="home">⌂ &nbsp; Home</button><button data-view="trending">↗ &nbsp; Trending</button><button data-view="newpairs">✧ &nbsp; New Pairs</button><button data-view="sniper">ϟ &nbsp; Sniper</button><button data-view="meme">◎ &nbsp; Meme Zone</button><button data-view="wallets">⌖ &nbsp; Wallet Tracker</button><button data-view="copy">▢ &nbsp; Copy Trade</button><button data-view="portfolio">▤ &nbsp; Portfolio</button></nav></div></div>
-<div class="modalShade" id="walletShade"><div class="modal"><div class="modalhead">Connect Wallet <button class="close" id="closeWallet">×</button></div><div class="modalbody"><div class="balance">● &nbsp; BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.</div><button class="phantom" id="phantom"><span class="phantomlogo">◉</span><span><strong>Phantom Wallet</strong><small id="phantomHint">Connect securely with Phantom</small></span><span style="margin-left:auto;color:#63d9bb;font-size:28px">›</span></button><div class="terms">On iPhone, Phantom opens this site in its in-app browser. Then approve the connection in Phantom.<br><br>Connect securely through Phantom. BLITZ can view your public address and request approvals; it never sees your recovery phrase or private key.</div></div></div></div>
+<div class="modalShade" id="walletShade"><div class="modal"><div class="modalhead">Connect a Solana wallet <button class="close" id="closeWallet">×</button></div><div class="modalbody"><div class="balance">Connect with a supported wallet to unlock the BLITZ workspace. You approve every transaction in your wallet.</div><div id="walletOptions" class="wallet-options"></div><div class="terms" id="walletTerms">Choose a wallet installed on this device. BLITZ never asks for your recovery phrase or private key.</div></div></div></div>
 <script>
 const coins=[{n:"Frog Engine",s:"FROGE",a:"🐸",age:"38s",mc:18200,v:94000,l:9100,h:86,c:22,ch:48},{n:"Blue Comet",s:"BCOMET",a:"☄️",age:"2m",mc:47200,v:221000,l:18400,h:214,c:41,ch:32},{n:"Pixel Ape",s:"PAPE",a:"🦍",age:"7m",mc:91300,v:510000,l:32000,h:592,c:68,ch:21},{n:"Night Shift",s:"SHIFT",a:"🌙",age:"19m",mc:214000,v:780000,l:54000,h:1040,c:91,ch:17},{n:"Turbo Toast",s:"TOAST",a:"🍞",age:"1h",mc:67000,v:190000,l:21000,h:386,c:54,ch:-8},{n:"Orbit Cat",s:"OCAT",a:"🐈",age:"3h",mc:382000,v:1300000,l:89000,h:2100,c:100,ch:12}];let chosen=0,filter="Trending",liveMode=false;
 const fmt=n=>n>=1e6?"$"+(n/1e6).toFixed(2)+"M":n>=1e3?"$"+(n/1e3).toFixed(1)+"K":"$"+n;
 function tokenrow(t,i){return `<div class="tokenrow ${i===chosen?"selected":""}" data-i="${i}"><div class="token"><div class="avatar">${t.a}</div><div style="min-width:0"><div class="tokenname">${t.n}<span class="pill">NEW</span></div><div class="ticker">${t.s} · ${t.age} · ${t.h} holders</div></div></div><div><div class="number">${fmt(t.mc)}</div><div class="tiny">Market cap</div></div><div><div class="number">${fmt(t.v)}</div><div class="tiny ${t.ch>=0?"up":"down"}">${t.ch>=0?"+":""}${t.ch}%</div></div><div class="curvecol"><div class="number">${t.c}%</div><div class="curve"><i style="width:${t.c}%"></i></div></div></div>`}
 function render(){let q=document.getElementById("search").value.toLowerCase(),arr=coins.filter(t=>(t.n+t.s+t.address).toLowerCase().includes(q));if(filter==="New")arr=arr.slice(0,10);if(filter==="Movers")arr.sort((a,b)=>b.ch-a.ch);if(filter==="Graduating")arr=arr.filter(t=>t.c>=65);document.getElementById("tokens").innerHTML=arr.map(t=>tokenrow(t,coins.indexOf(t))).join("")||'<div class="empty">No matching tokens.</div>';document.querySelectorAll("#tokens .tokenrow").forEach(el=>el.onclick=()=>{chosen=+el.dataset.i;render();detail()})}
 function detail(){let t=coins[chosen];document.getElementById("detail").innerHTML=`<div class="panelhead"><h2>${t.a} ${t.n}</h2><span class="badge">${t.s}</span></div><div class="desc">Sample token · launched ${t.age} ago</div><div class="stats" style="grid-template-columns:repeat(2,1fr);margin-top:13px"><div class="panel"><div class="statlabel">MARKET CAP</div><div class="statvalue">${fmt(t.mc)}</div></div><div class="panel"><div class="statlabel">LIQUIDITY</div><div class="statvalue">${fmt(t.l)}</div></div></div><div class="row"><span>Holders</span><b>${t.h}</b></div><div class="row"><span>24h change</span><b class="${t.ch>=0?"up":"down"}">${t.ch>=0?"+":""}${t.ch}%</b></div><div class="row"><span>Bonding curve</span><b>${t.c}%</b></div><div class="curve"><i style="width:${t.c}%"></i></div><button class="btn wide" onclick="switchView('sniper')">Open in Sniper</button><div class="note">Sample values only. Not a quote or risk assessment.</div>`}
-function switchView(v){document.getElementById("landing").classList.add("hide");document.getElementById("terminal").classList.add("show");document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById("view-"+v).classList.add("active");document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===v));document.getElementById("drawerShade").style.display="none";window.scrollTo({top:0,behavior:"smooth"})}
+function switchView(v){if(!connectedAddress){connectPhantom();return;}document.getElementById("landing").classList.add("hide");document.getElementById("terminal").classList.add("show");document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById("view-"+v).classList.add("active");document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===v));document.getElementById("drawerShade").style.display="none";window.scrollTo({top:0,behavior:"smooth"})}
 function showLanding(){document.getElementById("terminal").classList.remove("show");document.getElementById("landing").classList.remove("hide");window.scrollTo({top:0,behavior:"smooth"})}
-document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>switchView(b.dataset.view));document.getElementById("enterApp").onclick=()=>switchView("home");document.getElementById("brandHome").onclick=showLanding;document.getElementById("backLanding").onclick=showLanding;document.getElementById("featuresBtn").onclick=()=>document.getElementById("features").scrollIntoView({behavior:"smooth"});
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>switchView(b.dataset.view));document.getElementById("enterApp").onclick=()=>{if(connectedAddress)switchView("home");else connectPhantom();};document.getElementById("brandHome").onclick=showLanding;document.getElementById("backLanding").onclick=showLanding;document.getElementById("featuresBtn").style.display="none";document.getElementById("features").style.display="none";
 document.getElementById("menuBtn").onclick=()=>document.getElementById("drawerShade").style.display="block";document.getElementById("closeDrawer").onclick=()=>document.getElementById("drawerShade").style.display="none";document.getElementById("drawerShade").addEventListener("click",e=>{if(e.target.id==="drawerShade")e.currentTarget.style.display="none"});
 document.querySelectorAll("#homefilters button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#homefilters button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;render()});document.getElementById("search").oninput=render;
 document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,4).map(t=>tokenrow(t,coins.indexOf(t))).join("");
@@ -77,17 +172,63 @@ document.getElementById("addwallet").onclick=()=>{let v=walletaddr.value.trim();
 
 const walletBtn=document.getElementById("walletBtn");
 const walletShade=document.getElementById("walletShade");
-let phantomProvider=null, connectedAddress=null;
-function getPhantomProvider(){
-  const p=window.phantom?.solana || window.solana;
-  return p && p.isPhantom ? p : null;
+
+let phantomProvider=null, connectedAddress=null, connectedWalletName=null;
+function getWalletProviders(){
+  const candidates=[
+    ['Phantom',window.phantom?.solana || (window.solana?.isPhantom?window.solana:null)],
+    ['Solflare',window.solflare],
+    ['Backpack',window.backpack],
+    ['OKX Wallet',window.okxwallet?.solana],
+    ['Coinbase Wallet',window.coinbaseSolana],
+    ['Trust Wallet',window.trustwallet?.solana || window.trustWallet?.solana]
+  ];
+  const found=[],seen=new Set();
+  for(const [name,provider] of candidates){
+    if(!provider||typeof provider.connect!=='function'||seen.has(provider))continue;
+    seen.add(provider);found.push({name,provider});
+  }
+  if(window.solana&&typeof window.solana.connect==='function'&&!seen.has(window.solana))
+    found.push({name:'Solana Wallet',provider:window.solana});
+  return found;
+}
+function getPhantomProvider(){return getWalletProviders().find(x=>x.name==='Phantom')?.provider||null;}
+function renderWalletOptions(){
+  const target=document.getElementById('walletOptions'),found=getWalletProviders();
+  const options=[['Phantom','◉'],['Solflare','☀'],['Backpack','▣'],['OKX Wallet','◈'],['Coinbase Wallet','C'],['Trust Wallet','◇'],['Solana Wallet','◎']];
+  target.innerHTML=options.map(([name,icon])=>{
+    const available=found.some(x=>x.name===name);
+    return `<button class="wallet-choice" type="button" data-wallet-name="${name}" ${available?'':'disabled'}><span class="wallet-icon">${icon}</span><span><strong>${name}</strong><small>${available?'Detected · connect':'Not detected on this device'}</small></span></button>`;
+  }).join('');
+  target.querySelectorAll('[data-wallet-name]').forEach(btn=>btn.addEventListener('click',()=>connectSelectedWallet(btn.dataset.walletName)));
+  document.getElementById('walletTerms').textContent=found.length
+    ?'Choose a detected wallet. If yours is not listed, open BLITZ in that wallet’s in-app browser or install its official app/extension. Never enter a recovery phrase on BLITZ.'
+    :'No supported wallet was detected. Open BLITZ in your wallet’s in-app browser, or install a supported Solana wallet and reload.';
+}
+async function connectSelectedWallet(name){
+  const entry=getWalletProviders().find(x=>x.name===name);
+  if(!entry){renderWalletOptions();return;}
+  phantomProvider=entry.provider;connectedWalletName=entry.name;
+  try{
+    const response=await phantomProvider.connect();
+    const key=response?.publicKey||phantomProvider.publicKey;
+    if(!key)throw new Error('Wallet did not return a public address.');
+    setWalletConnected(key);
+  }catch(err){
+    if(err?.code===4001)return;
+    alert(name+' connection failed: '+(err?.message||'Unknown error')+'. Open BLITZ in the wallet app and try again.');
+  }
 }
 function shortAddress(s){return s ? s.slice(0,4)+"…"+s.slice(-4) : "";}
 function setWalletConnected(pubkey){
   connectedAddress=pubkey.toString();
   walletBtn.textContent=shortAddress(connectedAddress);
+  walletBtn.title=(connectedWalletName||'Wallet')+' · '+connectedAddress+' · Click to disconnect';
+  document.getElementById('landing').classList.add('hide');
+  document.getElementById('terminal').classList.add('show');
+  switchView('home');
   walletBtn.title=connectedAddress+" · Click to disconnect";
-  document.getElementById("phantomHint").textContent="Connected: "+shortAddress(connectedAddress);
+  document.getElementById("walletTerms").textContent="Connected securely. BLITZ never sees your recovery phrase or private key.";
   document.querySelector(".terms").textContent="Wallet connected. BLITZ will never ask for your recovery phrase or private key.";
   document.querySelector(".balance").textContent="Connected wallet: "+connectedAddress;
   walletShade.style.display="none";
@@ -131,36 +272,18 @@ async function loadWalletBalance(){
     console.error("BLITZ portfolio load failed",err);
   }
 }
-async function connectPhantom(){
-  phantomProvider=getPhantomProvider();
-  if(!phantomProvider){
-    const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isIOS){
-      const browseUrl="https://phantom.app/ul/browse/"+encodeURIComponent(window.location.href)+"?ref="+encodeURIComponent(window.location.origin);
-      window.location.href=browseUrl;
-      return;
-    }
-    alert("Phantom was not detected. Install the official Phantom browser extension, then reload BLITZ. Never enter your recovery phrase on this website.");
-    return;
-  }
-  try{
-    const response=await phantomProvider.connect();
-    const key=response?.publicKey || phantomProvider.publicKey;
-    if(!key)throw new Error("Phantom did not return a public address.");
-    setWalletConnected(key);
-  }catch(err){
-    if(err?.code===4001)return;
-    alert("Phantom connection failed: "+(err?.message || "Unknown error")+". Make sure BLITZ is open inside Phantom browser on iPhone, then try again.");
-  }
-}
+async function connectPhantom(){renderWalletOptions();walletShade.style.display="flex";}
 async function disconnectPhantom(){
   try{if(phantomProvider?.disconnect)await phantomProvider.disconnect();}catch(e){}
-  connectedAddress=null;
+  connectedAddress=null;connectedWalletName=null;phantomProvider=null;window.blitzSolBalance=undefined;
+  document.getElementById("terminal").classList.remove("show");
+  document.getElementById("landing").classList.remove("hide");
   walletBtn.textContent="Connect wallet";
+  renderWalletOptions();
   walletBtn.title="";
-  document.getElementById("phantomHint").textContent="Connect securely with Phantom";
-  document.querySelector(".terms").textContent="Connect securely through Phantom. BLITZ can view your public address and request approvals; it never sees your recovery phrase or private key.";
-  document.querySelector(".balance").textContent="BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.";
+  document.getElementById("walletTerms").textContent="Connect a supported Solana wallet to unlock BLITZ.";
+  document.getElementById("walletTerms").textContent="Choose a supported wallet. BLITZ never sees your recovery phrase or private key.";
+  document.querySelector(".balance").textContent="Connect a supported Solana wallet to unlock the BLITZ workspace. You approve every transaction in your wallet.";
   const stat=document.querySelector("#view-home .stats .panel:last-child .statvalue");
   if(stat)stat.textContent="— SOL";
   const note=document.querySelector("#view-home .stats .panel:last-child .statnote");
@@ -172,21 +295,17 @@ async function disconnectPhantom(){
   document.getElementById("holdings").innerHTML='<div class="empty">Connect Phantom to load your SOL and SPL token balances.</div>';
   document.getElementById("portfolioUpdated").textContent="";
 }
-walletBtn.onclick=()=>{if(connectedAddress){if(confirm("Disconnect your Phantom wallet from BLITZ?"))disconnectPhantom();}else walletShade.style.display="flex";};
+walletBtn.onclick=()=>{if(connectedAddress){if(confirm("Disconnect your wallet from BLITZ?"))disconnectPhantom();}else connectPhantom();};
 document.getElementById("refreshWallet").onclick=()=>{if(connectedAddress)loadWalletBalance();else alert("Connect Phantom first.");};
 document.getElementById("closeWallet").onclick=()=>walletShade.style.display="none";
-document.getElementById("phantom").onclick=connectPhantom;
+
 walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
 window.addEventListener("load",async()=>{
   loadLiveSolPrice();
   startLaunchStream();
   setInterval(loadLiveSolPrice,30000);
-  phantomProvider=getPhantomProvider();
-  if(phantomProvider){
-    try{const r=await phantomProvider.connect({onlyIfTrusted:true});const key=r?.publicKey||phantomProvider.publicKey;if(key)setWalletConnected(key);}catch(e){}
-    phantomProvider.on?.("accountChanged",key=>{if(key)setWalletConnected(key);else disconnectPhantom();});
-    phantomProvider.on?.("disconnect",disconnectPhantom);
-  }
+  if(connectedAddress){switchView("home");}else{document.getElementById("terminal").classList.remove("show");document.getElementById("landing").classList.remove("hide");}
+
 });
 
 
@@ -244,7 +363,7 @@ async function getSendWeb3(){
 function updateSendWallet(){
   const from=document.getElementById('sendFrom');
   const bal=document.getElementById('sendBalance');
-  if(from)from.textContent=connectedAddress?connectedAddress.toBase58?connectedAddress.toBase58():String(connectedAddress):'Not connected';
+  if(from)from.textContent=connectedAddress?String(connectedAddress):'Not connected';
   if(bal)bal.textContent=window.blitzSolBalance!==undefined?Number(window.blitzSolBalance).toFixed(6)+' SOL':'Refresh balance';
 }
 async function sendSolFromPhantom(){
