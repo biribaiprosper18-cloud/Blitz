@@ -71,7 +71,7 @@ app.get('/api/sol-price', async (_req, res) => {
   });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '1.2.4', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '1.3.0', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
@@ -113,6 +113,8 @@ app.get('/api/markets/latest', async (_req, res) => {
       const age = ageMs ? (ageMs < 3_600_000 ? `${Math.max(1, Math.floor(ageMs / 60_000))}m` : `${Math.floor(ageMs / 3_600_000)}h`) : '—';
       return {
         address,
+        pairAddress: pair.pairAddress || '',
+        priceUsd: Number(pair.priceUsd || 0),
         name: pair.baseToken?.name || profile.description?.slice(0, 36) || 'Unknown token',
         symbol: pair.baseToken?.symbol || '—',
         marketCap: pair.marketCap || pair.fdv || 0,

@@ -1,13 +1,15 @@
-# BLITZ v1.2.4 — Frontend Runtime Fix
+# BLITZ v1.3.0 — Live Charts & Market Data
 
 ## What changed
-- Fixed a startup crash caused by the minimal Home redesign removing the legacy `#search` and `#detail` elements while old JavaScript still accessed them unconditionally.
-- Made optional live-feed status UI references safe when that element is absent.
-- Removed a duplicate delegated click listener; the existing wallet button handlers remain the single click path.
-- Preserved the wallet picker, wallet provider detection, wallet logos, wallet balance endpoint, SOL price feed, market feed and current interface.
-- Backend health version updated to 1.2.4.
+- Added a dedicated live price-chart workspace to Trending.
+- Clicking a live token loads its DexScreener pair chart and a compact market overview.
+- Market feed now returns pair addresses and USD prices needed by the chart view.
+- Trending and New Pairs token rows are selectable.
+- Live feed refreshes when the terminal starts and can be refreshed manually.
+- Kept the existing wallet connection, wallet balances, and user-approved SOL transfer flow intact.
+- Kept trading controls in preview mode; this release does not enable automated or live token buys/sells.
 
 ## Deploy
-Upload the contents of this folder to the root of the existing GitHub repository, preserving `public/index.html` in the `public` folder. Commit to the branch connected to Render and wait for deployment. Then check `/api/health` and confirm `version` is `1.2.4`.
+Upload the contents of this folder to the root of the existing GitHub repository, preserving `public/index.html` in `public/`. Commit to the branch connected to Render and wait for deployment. Check `/api/health` and confirm `version` is `1.3.0`.
 
-The browser-side fix addresses the confirmed missing-element runtime errors. Wallet providers still need to be available in the wallet's in-app browser or installed browser extension. Never enter a seed phrase or private key into BLITZ.
+Charts are embedded from DexScreener and require a returned Solana pair address. Some newly created tokens may not have a chart until a liquid pair is indexed. Never enter a seed phrase or private key into BLITZ.
