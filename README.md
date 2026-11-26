@@ -85,5 +85,13 @@ For production reliability, set `SOLANA_RPC_URL` in Render to a Solana mainnet R
 - BLITZ never requests or stores recovery phrases or private keys.
 
 
-## 1.1.2 wallet logos
+## 1.1.3 wallet logos
 The wallet picker now displays branded SVG icons for Phantom, Solflare, Backpack, OKX Wallet, Coinbase Wallet, and Trust Wallet using the open-source solana-icons package hosted on jsDelivr. A neutral fallback icon appears if an image cannot load.
+
+
+## 1.1.3 mobile navigation and wallet connection fix
+- Removes the mobile bottom navigation element and force-hides any remaining mobilebar styles at all breakpoints.
+- Wallet picker buttons are always clickable; no provider is marked disabled simply because the browser does not expose it.
+- Provider discovery no longer requires `publicKey` to exist before calling `connect()`.
+- Wallet-specific app links are provided for Phantom, Solflare, Backpack, OKX, Coinbase Wallet and Trust Wallet. Wallet connection still must be approved in the wallet app/browser; universal deep-link behavior varies by installed app and OS.
+- For the most reliable connection on iOS, launch the site inside the selected wallet's in-app browser.
