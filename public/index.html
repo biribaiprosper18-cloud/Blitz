@@ -143,7 +143,7 @@ main{background:#f7f7fc}
  .home-market .panelhead h2{font-size:18px}
 }
 .modalShade#walletShade{z-index:9999!important;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}.modalShade#walletShade .modal{max-height:88vh;overflow:auto;width:min(100%,520px);margin:auto}\n</style></head><body>
-<header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn" type="button">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
+<header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn" type="button" onclick="window.openBlitzWalletPicker()">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
 <div class="landing" id="landing">
 <section class="hero"><div class="orb"></div><span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span><span class="particle p4"></span><div class="hero-inner">
 <div class="eyebrow">ϟ &nbsp; Built for focused Solana traders</div>
@@ -217,29 +217,13 @@ main{background:#f7f7fc}
 const coins=[{n:"Frog Engine",s:"FROGE",a:"🐸",age:"38s",mc:18200,v:94000,l:9100,h:86,c:22,ch:48},{n:"Blue Comet",s:"BCOMET",a:"☄️",age:"2m",mc:47200,v:221000,l:18400,h:214,c:41,ch:32},{n:"Pixel Ape",s:"PAPE",a:"🦍",age:"7m",mc:91300,v:510000,l:32000,h:592,c:68,ch:21},{n:"Night Shift",s:"SHIFT",a:"🌙",age:"19m",mc:214000,v:780000,l:54000,h:1040,c:91,ch:17},{n:"Turbo Toast",s:"TOAST",a:"🍞",age:"1h",mc:67000,v:190000,l:21000,h:386,c:54,ch:-8},{n:"Orbit Cat",s:"OCAT",a:"🐈",age:"3h",mc:382000,v:1300000,l:89000,h:2100,c:100,ch:12}];let chosen=0,filter="Trending",liveMode=false;
 const fmt=n=>n>=1e6?"$"+(n/1e6).toFixed(2)+"M":n>=1e3?"$"+(n/1e3).toFixed(1)+"K":"$"+n;
 function tokenrow(t,i){return `<div class="tokenrow ${i===chosen?"selected":""}" data-i="${i}"><div class="token"><div class="avatar">${t.a}</div><div style="min-width:0"><div class="tokenname">${t.n}<span class="pill">NEW</span></div><div class="ticker">${t.s} · ${t.age} · ${t.h} holders</div></div></div><div><div class="number">${fmt(t.mc)}</div><div class="tiny">Market cap</div></div><div><div class="number">${fmt(t.v)}</div><div class="tiny ${t.ch>=0?"up":"down"}">${t.ch>=0?"+":""}${t.ch}%</div></div><div class="curvecol"><div class="number">${t.c}%</div><div class="curve"><i style="width:${t.c}%"></i></div></div></div>`}
-function render(){
-  const searchEl=document.getElementById("search");
-  const q=(searchEl?.value||"").toLowerCase();
-  let arr=coins.filter(t=>(String(t.n||"")+" "+String(t.s||"")+" "+String(t.address||"")).toLowerCase().includes(q));
-  if(filter==="New")arr=arr.slice(0,10);
-  if(filter==="Movers")arr.sort((a,b)=>b.ch-a.ch);
-  if(filter==="Graduating")arr=arr.filter(t=>t.c>=65);
-  const target=document.getElementById("tokens");
-  if(target)target.innerHTML=arr.map(t=>tokenrow(t,coins.indexOf(t))).join("")||'<div class="empty">No matching tokens.</div>';
-  document.querySelectorAll("#tokens .tokenrow").forEach(el=>el.onclick=()=>{chosen=+el.dataset.i;render();detail();});
-}
-function detail(){
-  const target=document.getElementById("detail");
-  if(!target||!coins.length)return;
-  const t=coins[chosen]||coins[0];
-  target.innerHTML=`<div class="panelhead"><h2>${t.a} ${t.n}</h2><span class="badge">${t.s}</span></div><div class="desc">Sample token · launched ${t.age} ago</div><div class="stats" style="grid-template-columns:repeat(2,1fr);margin-top:13px"><div class="panel"><div class="statlabel">MARKET CAP</div><div class="statvalue">${fmt(t.mc)}</div></div><div class="panel"><div class="statlabel">LIQUIDITY</div><div class="statvalue">${fmt(t.l)}</div></div></div><div class="row"><span>Holders</span><b>${t.h}</b></div><div class="row"><span>24h change</span><b class="${t.ch>=0?"up":"down"}">${t.ch>=0?"+":""}${t.ch}%</b></div><div class="row"><span>Bonding curve</span><b>${t.c}%</b></div><div class="curve"><i style="width:${t.c}%"></i></div><button class="btn wide" onclick="switchView('sniper')">Open in Sniper</button><div class="note">Sample values only. Not a quote or risk assessment.</div>`;
-}
+function render(){let q=document.getElementById("search").value.toLowerCase(),arr=coins.filter(t=>(t.n+t.s+t.address).toLowerCase().includes(q));if(filter==="New")arr=arr.slice(0,10);if(filter==="Movers")arr.sort((a,b)=>b.ch-a.ch);if(filter==="Graduating")arr=arr.filter(t=>t.c>=65);document.getElementById("tokens").innerHTML=arr.map(t=>tokenrow(t,coins.indexOf(t))).join("")||'<div class="empty">No matching tokens.</div>';document.querySelectorAll("#tokens .tokenrow").forEach(el=>el.onclick=()=>{chosen=+el.dataset.i;render();detail()})}
+function detail(){let t=coins[chosen];document.getElementById("detail").innerHTML=`<div class="panelhead"><h2>${t.a} ${t.n}</h2><span class="badge">${t.s}</span></div><div class="desc">Sample token · launched ${t.age} ago</div><div class="stats" style="grid-template-columns:repeat(2,1fr);margin-top:13px"><div class="panel"><div class="statlabel">MARKET CAP</div><div class="statvalue">${fmt(t.mc)}</div></div><div class="panel"><div class="statlabel">LIQUIDITY</div><div class="statvalue">${fmt(t.l)}</div></div></div><div class="row"><span>Holders</span><b>${t.h}</b></div><div class="row"><span>24h change</span><b class="${t.ch>=0?"up":"down"}">${t.ch>=0?"+":""}${t.ch}%</b></div><div class="row"><span>Bonding curve</span><b>${t.c}%</b></div><div class="curve"><i style="width:${t.c}%"></i></div><button class="btn wide" onclick="switchView('sniper')">Open in Sniper</button><div class="note">Sample values only. Not a quote or risk assessment.</div>`}
 function switchView(v){if(!connectedAddress){connectPhantom();return;}document.getElementById("landing").classList.add("hide");document.getElementById("terminal").classList.add("show");document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById("view-"+v).classList.add("active");document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x.dataset.view===v));document.getElementById("drawerShade").style.display="none";window.scrollTo({top:0,behavior:"smooth"})}
 function showLanding(){document.getElementById("terminal").classList.remove("show");document.getElementById("landing").classList.remove("hide");window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>switchView(b.dataset.view));document.getElementById("enterApp").onclick=()=>{if(connectedAddress)switchView("home");else connectPhantom();};document.getElementById("brandHome").onclick=showLanding;document.getElementById("backLanding").onclick=showLanding;document.getElementById("featuresBtn").style.display="none";document.getElementById("features").style.display="none";
 document.getElementById("menuBtn").onclick=()=>document.getElementById("drawerShade").style.display="block";document.getElementById("closeDrawer").onclick=()=>document.getElementById("drawerShade").style.display="none";document.getElementById("drawerShade").addEventListener("click",e=>{if(e.target.id==="drawerShade")e.currentTarget.style.display="none"});
-document.querySelectorAll("#homefilters button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#homefilters button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;render()});
-const searchInput=document.getElementById("search");if(searchInput)searchInput.oninput=render;
+document.querySelectorAll("#homefilters button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#homefilters button").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;render()});const searchInput=document.getElementById("search");if(searchInput)searchInput.oninput=render;
 document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,4).map(t=>tokenrow(t,coins.indexOf(t))).join("");
 document.getElementById("manual").onclick=()=>{manualbox.style.display="block";autobox.style.display="none";manual.classList.add("active");auto.classList.remove("active")};document.getElementById("auto").onclick=()=>{manualbox.style.display="none";autobox.style.display="block";auto.classList.add("active");manual.classList.remove("active")};
 document.getElementById("preview").onclick=()=>{let n=+amount.value;previewmsg.textContent=n>=.001&&n<=10?`Paper preview: ${n} SOL allocated to ${mint.value||coins[chosen].s}. No transaction sent.`:"Enter an amount from 0.001 to 10 SOL."};document.getElementById("saveauto").onclick=()=>automsg.textContent="Paper rules saved for this session. Automated execution remains disabled.";
@@ -306,8 +290,8 @@ function chooseWallet(name){
   };
   const link=links[name];
   if(link){
-    document.getElementById('walletTerms').textContent='Opening '+name+'… If it does not open, open the wallet app and visit this site in its built-in browser.';
-    window.location.href=link;
+    const opened=window.open(link,'_blank');
+    if(!opened){window.location.assign(link);}
     return;
   }
   document.getElementById('walletTerms').textContent='Could not open '+name+' automatically. Open its official app, use its browser, and visit blitz-solana-terminal.onrender.com.';
@@ -379,7 +363,7 @@ async function loadWalletBalance(){
     console.error("BLITZ portfolio load failed",err);
   }
 }
-async function connectPhantom(){renderWalletOptions();walletShade.style.display="flex";walletShade.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+function connectPhantom(){renderWalletOptions();walletShade.style.display="flex";walletShade.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
 window.openBlitzWalletPicker=function(){
   try{connectPhantom();}
   catch(error){
@@ -563,8 +547,10 @@ async function loadLiveSolPrice(){
   }
 }
 
-async function loadLiveFeed(){const b=document.getElementById("refreshLive"),status=document.getElementById("feedStatus");if(!b)return;b.disabled=true;b.textContent="Loading…";if(status)status.textContent="FETCHING LIVE DATA";try{const r=await fetch("/api/markets/latest");if(!r.ok)throw new Error("Market feed unavailable ("+r.status+")");const payload=await r.json();if(!payload.tokens||!payload.tokens.length)throw new Error("No Solana pairs returned by provider");coins.splice(0,coins.length,...payload.tokens.map(t=>({n:t.name||"Unknown token",s:t.symbol||"—",a:"◈",age:t.age||"—",mc:Number(t.marketCap||0),v:Number(t.volume24h||0),l:Number(t.liquidity||0),h:0,c:0,ch:Number(t.change24h||0),address:t.address||"",url:t.url||""})));chosen=0;liveMode=true;if(status)status.textContent="LIVE · DEXSCREENER";b.textContent="Refresh feed";render();detail();document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,10).map(t=>tokenrow(t,coins.indexOf(t))).join("");}catch(e){if(status)status.textContent="SAMPLE DATA · LIVE FEED FAILED";b.textContent="Retry live feed";alert(e.message+". The sample feed remains visible.")}finally{b.disabled=false}}
+async function loadLiveFeed(){const b=document.getElementById("refreshLive"),status=document.getElementById("feedStatus");b.disabled=true;b.textContent="Loading…";if(status)status.textContent="FETCHING LIVE DATA";try{const r=await fetch("/api/markets/latest");if(!r.ok)throw new Error("Market feed unavailable ("+r.status+")");const payload=await r.json();if(!payload.tokens||!payload.tokens.length)throw new Error("No Solana pairs returned by provider");coins.splice(0,coins.length,...payload.tokens.map(t=>({n:t.name||"Unknown token",s:t.symbol||"—",a:"◈",age:t.age||"—",mc:Number(t.marketCap||0),v:Number(t.volume24h||0),l:Number(t.liquidity||0),h:0,c:0,ch:Number(t.change24h||0),address:t.address||"",url:t.url||""})));chosen=0;liveMode=true;if(status)status.textContent="LIVE · DEXSCREENER";b.textContent="Refresh feed";render();if(document.getElementById("detail"))detail();document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,10).map(t=>tokenrow(t,coins.indexOf(t))).join("");}catch(e){if(status)status.textContent="SAMPLE DATA · LIVE FEED FAILED";b.textContent="Retry live feed";alert(e.message+". The sample feed remains visible.")}finally{b.disabled=false}}
 document.getElementById("refreshLive").onclick=loadLiveFeed;
-render();detail();
+render();if(document.getElementById("detail"))detail();
 
+
+// BLITZ 1.2.4: guard optional legacy elements removed from the minimal Home view.
 </script></body></html>
