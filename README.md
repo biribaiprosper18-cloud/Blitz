@@ -30,3 +30,7 @@ BLITZ now uses a dark charcoal and neon-green accent palette. Wallet connection 
 
 ## Live SOL price
 The home dashboard fetches SOL/USD from CoinGecko, with Binance SOL/USDT as a fallback, caches responses for 30 seconds, and refreshes the displayed price every 60 seconds. The displayed percentage is the provider's 24-hour change. This is a market reference price, not an executable quote.
+
+
+## SOL price feed reliability update (0.7.5)
+The SOL/USD spot endpoint now tries CoinGecko, Coinbase, Kraken, then Binance. The browser refreshes every 30 seconds, shows an unavailable state instead of remaining on Loading, and the server may return a clearly marked cached value for up to 10 minutes if all providers are temporarily down. The 24-hour change is displayed only when supplied by the provider.

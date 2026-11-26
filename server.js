@@ -9,42 +9,68 @@ let marketCache = { at: 0, tokens: null };
 const CACHE_MS = 30_000;
 
 
+
 let solPriceCache = { at: 0, data: null };
 app.get('/api/sol-price', async (_req, res) => {
-  try {
-    if (solPriceCache.data && Date.now() - solPriceCache.at < 30_000) {
-      return res.json({ ...solPriceCache.data, cached: true, updatedAt: solPriceCache.at });
-    }
-    let data = null;
-    try {
-      const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true', {
-        headers: { 'accept': 'application/json', 'user-agent': 'BLITZ-terminal/0.7.4' },
-        signal: AbortSignal.timeout(8000)
-      });
-      if (!r.ok) throw new Error(`CoinGecko returned ${r.status}`);
-      const j = await r.json();
-      if (Number.isFinite(Number(j?.solana?.usd))) {
-        data = { price: Number(j.solana.usd), change24h: Number(j.solana.usd_24h_change || 0), source: 'CoinGecko' };
+  const errors = [];
+  const providers = [
+    {
+      name: 'CoinGecko',
+      url: 'https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true',
+      parse: j => ({ price: Number(j?.solana?.usd), change24h: Number(j?.solana?.usd_24h_change || 0) })
+    },
+    {
+      name: 'Coinbase',
+      url: 'https://api.coinbase.com/v2/prices/SOL-USD/spot',
+      parse: j => ({ price: Number(j?.data?.amount), change24h: null })
+    },
+    {
+      name: 'Kraken',
+      url: 'https://api.kraken.com/0/public/Ticker?pair=SOLUSD',
+      parse: j => {
+        const result = j?.result || {};
+        const ticker = Object.values(result)[0];
+        return { price: Number(ticker?.c?.[0]), change24h: null };
       }
-    } catch (_) {}
-    if (!data) {
-      const r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=SOLUSDT', {
-        headers: { 'accept': 'application/json' }, signal: AbortSignal.timeout(8000)
-      });
-      if (!r.ok) throw new Error(`Price providers unavailable (${r.status})`);
-      const j = await r.json();
-      data = { price: Number(j.lastPrice), change24h: Number(j.priceChangePercent || 0), source: 'Binance' };
+    },
+    {
+      name: 'Binance',
+      url: 'https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT',
+      parse: j => ({ price: Number(j?.price), change24h: null })
     }
-    if (!Number.isFinite(data.price) || data.price <= 0) throw new Error('Provider returned an invalid SOL price');
-    solPriceCache = { at: Date.now(), data };
-    res.set('Cache-Control', 'no-store');
-    res.json({ ...data, cached: false, updatedAt: solPriceCache.at });
-  } catch (error) {
-    res.status(502).json({ error: 'Live SOL price is temporarily unavailable', detail: error.message });
+  ];
+
+  for (const provider of providers) {
+    try {
+      const response = await fetch(provider.url, {
+        headers: { 'accept': 'application/json', 'user-agent': 'BLITZ-terminal/0.7.5' },
+        signal: AbortSignal.timeout(7000)
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payload = await response.json();
+      const parsed = provider.parse(payload);
+      if (!Number.isFinite(parsed.price) || parsed.price <= 0) throw new Error('Invalid price response');
+      const data = { price: parsed.price, change24h: parsed.change24h, source: provider.name };
+      solPriceCache = { at: Date.now(), data };
+      res.set('Cache-Control', 'no-store');
+      return res.json({ ...data, cached: false, updatedAt: solPriceCache.at });
+    } catch (error) {
+      errors.push(`${provider.name}: ${error.message}`);
+    }
   }
+
+  // If every provider is temporarily unavailable, return a recent cached value
+  // with its timestamp rather than leaving the dashboard stuck on "Loading".
+  if (solPriceCache.data && Date.now() - solPriceCache.at < 10 * 60_000) {
+    return res.json({ ...solPriceCache.data, cached: true, stale: true, updatedAt: solPriceCache.at });
+  }
+  res.status(502).json({
+    error: 'All live SOL price providers failed',
+    detail: errors.join(' | ')
+  });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.7.4', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.7.5', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
