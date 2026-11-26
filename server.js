@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(express.json({ limit: '256kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Small in-memory cache prevents repeated upstream requests while users refresh.
@@ -70,7 +71,7 @@ app.get('/api/sol-price', async (_req, res) => {
   });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.10.0', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.10.1', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
@@ -319,6 +320,53 @@ app.get('/api/launches/stream', (req, res) => {
 
 app.get('/api/launches/status', (_req, res) => {
   res.json({ status: pumpStatus, count: recentLaunches.length, updatedAt: Date.now() });
+});
+
+
+
+// Restricted Solana RPC proxy for wallet transfer preparation.
+// Only read-only methods are accepted; Phantom submits the signed transaction.
+const allowedTransferRpcMethods = new Set([
+  'getLatestBlockhash',
+  'getFeeForMessage',
+  'getBalance'
+]);
+app.post('/api/solana/rpc', async (req, res) => {
+  try {
+    const { method, params = [], id = 1, jsonrpc = '2.0' } = req.body || {};
+    if (!allowedTransferRpcMethods.has(method)) {
+      return res.status(403).json({ jsonrpc: '2.0', id, error: { code: -32601, message: 'RPC method not allowed' } });
+    }
+    const rpcUrls = [
+      process.env.SOLANA_RPC_URL,
+      'https://api.mainnet-beta.solana.com',
+      'https://solana-rpc.publicnode.com'
+    ].filter(Boolean);
+    let lastError;
+    for (const url of rpcUrls) {
+      try {
+        const upstream = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'accept': 'application/json' },
+          body: JSON.stringify({ jsonrpc, id, method, params }),
+          signal: AbortSignal.timeout(12000)
+        });
+        const payload = await upstream.json();
+        if (!upstream.ok || payload.error) {
+          const message = payload?.error?.message || `RPC HTTP ${upstream.status}`;
+          throw new Error(message);
+        }
+        res.set('Cache-Control', 'no-store');
+        return res.json(payload);
+      } catch (error) { lastError = error; }
+    }
+    return res.status(502).json({
+      jsonrpc: '2.0', id,
+      error: { code: -32000, message: `Solana RPC unavailable: ${lastError?.message || 'all endpoints failed'}` }
+    });
+  } catch (error) {
+    res.status(500).json({ jsonrpc: '2.0', id: 1, error: { code: -32603, message: 'RPC proxy error' } });
+  }
 });
 
 
