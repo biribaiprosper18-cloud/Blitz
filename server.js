@@ -70,7 +70,7 @@ app.get('/api/sol-price', async (_req, res) => {
   });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.7.5', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.8.0', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
@@ -215,6 +215,98 @@ app.get('/api/wallet/:address', async (req, res) => {
     });
   }
 });
+
+
+// One shared PumpPortal connection for free new-token and migration events.
+// No trade subscriptions are opened here, so this detector does not incur trade-stream charges.
+const WebSocket = require('ws');
+const launchClients = new Set();
+let pumpSocket = null;
+let pumpStatus = 'connecting';
+let reconnectTimer = null;
+let reconnectDelay = 2000;
+const recentLaunches = [];
+const MAX_LAUNCHES = 100;
+
+function publishLaunchEvent(type, payload) {
+  const event = { type, payload, receivedAt: Date.now() };
+  if (type === 'newToken') {
+    const mint = String(payload?.mint || '');
+    if (!mint || recentLaunches.some(item => item.mint === mint)) return;
+    recentLaunches.unshift({
+      mint,
+      name: String(payload.name || 'Unknown token').slice(0, 80),
+      symbol: String(payload.symbol || '—').slice(0, 24),
+      creator: String(payload.traderPublicKey || payload.creator || ''),
+      pool: String(payload.pool || ''),
+      marketCapSol: Number(payload.marketCapSol || 0),
+      initialSol: Number(payload.solAmount || 0),
+      uri: String(payload.uri || ''),
+      createdAt: Date.now()
+    });
+    if (recentLaunches.length > MAX_LAUNCHES) recentLaunches.length = MAX_LAUNCHES;
+  }
+  const frame = `event: ${type}\ndata: ${JSON.stringify(event)}\n\n`;
+  for (const client of launchClients) {
+    if (!client.writableEnded) client.write(frame);
+  }
+}
+
+function connectPumpPortal() {
+  clearTimeout(reconnectTimer);
+  pumpStatus = 'connecting';
+  for (const client of launchClients) {
+    if (!client.writableEnded) client.write(`event: status\ndata: ${JSON.stringify({ status: pumpStatus })}\n\n`);
+  }
+  pumpSocket = new WebSocket('wss://pumpportal.fun/api/data');
+  pumpSocket.on('open', () => {
+    reconnectDelay = 2000;
+    pumpStatus = 'connected';
+    pumpSocket.send(JSON.stringify({ method: 'subscribeNewToken' }));
+    pumpSocket.send(JSON.stringify({ method: 'subscribeMigration' }));
+    for (const client of launchClients) {
+      if (!client.writableEnded) client.write(`event: status\ndata: ${JSON.stringify({ status: pumpStatus })}\n\n`);
+    }
+  });
+  pumpSocket.on('message', raw => {
+    try {
+      const payload = JSON.parse(raw.toString());
+      if (payload?.mint) publishLaunchEvent('newToken', payload);
+      else if (payload?.signature || payload?.pool) publishLaunchEvent('migration', payload);
+    } catch (_) {}
+  });
+  pumpSocket.on('error', err => console.error('PumpPortal WebSocket error:', err.message));
+  pumpSocket.on('close', () => {
+    pumpStatus = 'reconnecting';
+    reconnectTimer = setTimeout(connectPumpPortal, reconnectDelay);
+    reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+  });
+}
+
+app.get('/api/launches/stream', (req, res) => {
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache, no-transform',
+    'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no'
+  });
+  res.flushHeaders?.();
+  launchClients.add(res);
+  res.write(`event: status\ndata: ${JSON.stringify({ status: pumpStatus })}\n\n`);
+  res.write(`event: snapshot\ndata: ${JSON.stringify({ launches: recentLaunches })}\n\n`);
+  const heartbeat = setInterval(() => {
+    if (!res.writableEnded) res.write(': keepalive\n\n');
+  }, 20000);
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    launchClients.delete(res);
+  });
+});
+
+app.get('/api/launches/status', (_req, res) => {
+  res.json({ status: pumpStatus, count: recentLaunches.length, updatedAt: Date.now() });
+});
+
 
 app.get('*', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.listen(port, () => console.log(`BLITZ running on port ${port}`));

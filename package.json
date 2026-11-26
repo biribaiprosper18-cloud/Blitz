@@ -1,1 +1,15 @@
-{"name":"blitz-solana-terminal","version":"0.7.2","private":true,"engines":{"node":">=20"},"scripts":{"start":"node server.js"},"dependencies":{"express":"^4.21.2"}}
+{
+  "name": "blitz-solana-terminal",
+  "version": "0.8.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}

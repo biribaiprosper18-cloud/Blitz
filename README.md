@@ -32,5 +32,13 @@ BLITZ now uses a dark charcoal and neon-green accent palette. Wallet connection 
 The home dashboard fetches SOL/USD from CoinGecko, with Binance SOL/USDT as a fallback, caches responses for 30 seconds, and refreshes the displayed price every 60 seconds. The displayed percentage is the provider's 24-hour change. This is a market reference price, not an executable quote.
 
 
-## SOL price feed reliability update (0.7.5)
+## SOL price feed reliability update (0.8.0)
 The SOL/USD spot endpoint now tries CoinGecko, Coinbase, Kraken, then Binance. The browser refreshes every 30 seconds, shows an unavailable state instead of remaining on Loading, and the server may return a clearly marked cached value for up to 10 minutes if all providers are temporarily down. The 24-hour change is displayed only when supplied by the provider.
+
+
+## Phase 1: live launch detector (0.8.0)
+- A single server-side PumpPortal WebSocket connection subscribes to `subscribeNewToken` and `subscribeMigration`.
+- The server relays launch events to browser clients using Server-Sent Events (SSE), with reconnect/backoff and a rolling 100-launch list.
+- The New Pairs view shows live token name, symbol, mint, and initial market-cap-in-SOL field when provided by the event.
+- This phase is detection only. It does not subscribe to metered token/account trade streams and cannot execute buys or sells.
+- The backend uses the `ws` package; deploy with `npm install` so Render installs the new dependency.
