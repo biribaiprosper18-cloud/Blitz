@@ -32,11 +32,11 @@ BLITZ now uses a dark charcoal and neon-green accent palette. Wallet connection 
 The home dashboard fetches SOL/USD from CoinGecko, with Binance SOL/USDT as a fallback, caches responses for 30 seconds, and refreshes the displayed price every 60 seconds. The displayed percentage is the provider's 24-hour change. This is a market reference price, not an executable quote.
 
 
-## SOL price feed reliability update (0.8.1)
+## SOL price feed reliability update (0.9.0)
 The SOL/USD spot endpoint now tries CoinGecko, Coinbase, Kraken, then Binance. The browser refreshes every 30 seconds, shows an unavailable state instead of remaining on Loading, and the server may return a clearly marked cached value for up to 10 minutes if all providers are temporarily down. The 24-hour change is displayed only when supplied by the provider.
 
 
-## Phase 1: live launch detector (0.8.1)
+## Phase 1: live launch detector (0.9.0)
 - A single server-side PumpPortal WebSocket connection subscribes to `subscribeNewToken` and `subscribeMigration`.
 - The server relays launch events to browser clients using Server-Sent Events (SSE), with reconnect/backoff and a rolling 100-launch list.
 - The New Pairs view shows live token name, symbol, mint, and initial market-cap-in-SOL field when provided by the event.
@@ -44,5 +44,13 @@ The SOL/USD spot endpoint now tries CoinGecko, Coinbase, Kraken, then Binance. T
 - The backend uses the `ws` package; deploy with `npm install` so Render installs the new dependency.
 
 
-## 0.8.1 launch-stream startup fix
+## 0.9.0 launch-stream startup fix
 The PumpPortal WebSocket client is now explicitly started when the Render server boots. The previous detector defined the connection/reconnect function but did not invoke it, leaving the public status endpoint stuck at `connecting`. Added a 12-second connection timeout and improved error/close diagnostics.
+
+
+## Phase 2: Smart Token Scanner (0.9.0)
+- Adds transparent launch-data completeness checks for token name, ticker, creator address, initial market-cap field, and metadata URI.
+- Displays the creator address and metadata URI when present, with copy controls.
+- Missing market-cap data is shown as Unavailable, not 0.00 SOL.
+- These checks are data-quality indicators only. They do not determine whether a token is safe, detect honeypots, verify liquidity/holders, or predict price performance.
+- No buy/sell execution or transaction signing is added.
