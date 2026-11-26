@@ -163,7 +163,7 @@ document.getElementById("phantom").onclick=connectPhantom;
 walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
 window.addEventListener("load",async()=>{
   loadLiveSolPrice();
-  setInterval(loadLiveSolPrice,60000);
+  setInterval(loadLiveSolPrice,30000);
   phantomProvider=getPhantomProvider();
   if(phantomProvider){
     try{const r=await phantomProvider.connect({onlyIfTrusted:true});const key=r?.publicKey||phantomProvider.publicKey;if(key)setWalletConnected(key);}catch(e){}
@@ -173,21 +173,31 @@ window.addEventListener("load",async()=>{
 });
 
 
+
 async function loadLiveSolPrice(){
   const value=document.getElementById("solPriceValue");
   const note=document.getElementById("solPriceNote");
   if(!value||!note)return;
   try{
-    const response=await fetch("/api/sol-price",{cache:"no-store"});
-    if(!response.ok)throw new Error("Price provider unavailable");
-    const data=await response.json();
+    const response=await fetch("/api/sol-price?ts="+Date.now(),{cache:"no-store"});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.detail||data.error||("HTTP "+response.status));
     value.textContent=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(data.price);
-    note.textContent=(data.change24h>=0?"+":"")+data.change24h.toFixed(2)+"% · live via "+data.source;
-    note.className="statnote "+(data.change24h>=0?"up":"down");
+    const change=Number(data.change24h);
+    if(Number.isFinite(change)){
+      note.textContent=(change>=0?"+":"")+change.toFixed(2)+"% · live via "+data.source+(data.stale?" · delayed":"");
+      note.className="statnote "+(change>=0?"up":"down");
+    }else{
+      note.textContent="Live spot price · "+data.source+(data.stale?" · delayed":"");
+      note.className="statnote";
+    }
     note.title="Updated "+new Date(data.updatedAt).toLocaleTimeString();
   }catch(error){
-    note.textContent="Live price unavailable · retrying";
-    note.className="statnote";
+    value.textContent="Unavailable";
+    note.textContent="Price feed error · retrying";
+    note.title=String(error.message||error);
+    note.className="statnote down";
+    console.error("BLITZ SOL price failed:",error);
   }
 }
 
