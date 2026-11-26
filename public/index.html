@@ -259,7 +259,7 @@ async function sendSolFromPhantom(){
   btn.disabled=true;btn.textContent='Preparing transaction…';msg.textContent='Checking recipient, balance and network fee…';
   try{
     const web3=await getSendWeb3();
-    const connection=new web3.Connection(web3.clusterApiUrl('mainnet-beta'),'confirmed');
+    const connection=new web3.Connection(window.location.origin+'/api/solana/rpc','confirmed');
     const recipient=new web3.PublicKey(recipientText);
     const owner=new web3.PublicKey(connectedAddress.toBase58?connectedAddress.toBase58():String(connectedAddress));
     if(recipient.equals(owner))throw new Error('Recipient address is the same as your connected wallet.');
