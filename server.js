@@ -70,7 +70,7 @@ app.get('/api/sol-price', async (_req, res) => {
   });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.8.0', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.8.1', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
@@ -259,7 +259,12 @@ function connectPumpPortal() {
     if (!client.writableEnded) client.write(`event: status\ndata: ${JSON.stringify({ status: pumpStatus })}\n\n`);
   }
   pumpSocket = new WebSocket('wss://pumpportal.fun/api/data');
+  const socketRef = pumpSocket;
+  const connectTimeout = setTimeout(() => {
+    if (socketRef.readyState === WebSocket.CONNECTING) socketRef.terminate();
+  }, 12000);
   pumpSocket.on('open', () => {
+    clearTimeout(connectTimeout);
     reconnectDelay = 2000;
     pumpStatus = 'connected';
     pumpSocket.send(JSON.stringify({ method: 'subscribeNewToken' }));
@@ -275,13 +280,22 @@ function connectPumpPortal() {
       else if (payload?.signature || payload?.pool) publishLaunchEvent('migration', payload);
     } catch (_) {}
   });
-  pumpSocket.on('error', err => console.error('PumpPortal WebSocket error:', err.message));
-  pumpSocket.on('close', () => {
+  pumpSocket.on('error', err => {
+    clearTimeout(connectTimeout);
+    pumpStatus = 'error';
+    console.error('PumpPortal WebSocket error:', err.message);
+  });
+  pumpSocket.on('close', (code, reason) => {
+    clearTimeout(connectTimeout);
     pumpStatus = 'reconnecting';
+    console.error('PumpPortal WebSocket closed:', code, reason?.toString() || '');
     reconnectTimer = setTimeout(connectPumpPortal, reconnectDelay);
     reconnectDelay = Math.min(reconnectDelay * 2, 30000);
   });
 }
+
+// Start the shared upstream socket when the Render server boots.
+connectPumpPortal();
 
 app.get('/api/launches/stream', (req, res) => {
   res.set({
