@@ -1,23 +1,29 @@
-# BLITZ v0.6 — Unified site + first live market-data connection
+# BLITZ v0.7 — Phantom wallet connection
 
-## What's new
-- Landing page and trading workspace remain one application.
-- Added server-side `/api/markets/latest` integration with the public DexScreener API.
-- Home > Market discovery > **Load live feed** fetches latest Solana token profiles and enriches them with pair market cap/FDV, 24h volume, liquidity, 24h price change and pair age.
-- 30-second server cache to reduce upstream requests.
-- If the provider is unavailable, the UI keeps the sample feed and shows a clear error.
+This release builds on v0.6 and adds a real, permission-based Phantom provider connection.
 
-## Run locally
-1. Install Node.js 18+.
-2. Run `npm install`.
-3. Run `npm start`.
-4. Open `http://localhost:3000`.
+## What it does
+- Detects Phantom's injected Solana provider (`window.phantom.solana` / `window.solana`)
+- Requests connection only after the user clicks Connect
+- On iPhone Safari, opens the current BLITZ URL in Phantom's in-app browser using Phantom's browse universal link
+- Displays the connected public address and requests the public SOL balance from Solana mainnet RPC
+- Supports disconnect and account-change events
+- Retains the v0.6 DEX Screener market-data endpoint
 
-## Deploy to existing Render service
-Replace the repository files with this project, commit and push. Keep the current Render service and domain; trigger a deploy of that existing service.
+## Deploy
+Replace the files in the Git repository connected to your existing Render service, then commit and push. Keep the same Render service/domain.
 
-## Data limitations
-DexScreener's latest token-profiles endpoint is a discovery source, not a complete firehose of every brand-new Pump.fun launch. The current implementation only displays profile tokens for which DexScreener returns a Solana trading pair. Metrics are third-party market data and can lag or be incomplete. The app labels live-feed status and falls back to sample data if no usable results arrive.
+## iPhone connection steps
+1. Install/open the official Phantom app.
+2. Visit BLITZ in Safari and tap Connect wallet.
+3. BLITZ redirects to the same site inside Phantom's in-app browser.
+4. Tap Connect wallet again and approve the connection in Phantom.
 
-## Not enabled yet
-No Phantom wallet connection, transaction signing, automated execution, on-chain authority/rug scanner, wallet PnL analytics or copy trading is implemented. Do not enter seed phrases or private keys. Real trading requires independent transaction simulation, wallet-signed approval, spend caps, slippage limits, and an emergency stop.
+Phantom's mobile app only supports dapp connections inside its in-app browser; Safari itself cannot complete the mobile connection.
+
+## Security / limitations
+- BLITZ only requests the public wallet address and public SOL balance.
+- This release does not sign messages, submit transactions, trade, or request token permissions.
+- Never enter a recovery phrase or private key into BLITZ.
+- The public balance read uses Solana's public mainnet RPC. For production scale, use a reliable RPC provider and rate limits.
+- The market feed remains the v0.6 DEX Screener preview and is not a guaranteed low-latency launch stream.
