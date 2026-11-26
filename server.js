@@ -71,7 +71,7 @@ app.get('/api/sol-price', async (_req, res) => {
   });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '1.4.0', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '1.5.0', mode: 'jupiter-swap-v2' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
@@ -371,6 +371,44 @@ app.post('/api/solana/rpc', async (req, res) => {
   }
 });
 
+
+
+
+// Jupiter Swap API V2 proxy. The API key stays server-side in Render env vars.
+const JUPITER_BASE = 'https://api.jup.ag/swap/v2';
+async function jupiterFetch(url, options = {}) {
+  const headers = { accept: 'application/json', ...(options.headers || {}) };
+  if (process.env.JUPITER_API_KEY) headers['x-api-key'] = process.env.JUPITER_API_KEY;
+  const upstream = await fetch(url, { ...options, headers, signal: AbortSignal.timeout(20000) });
+  const payload = await upstream.json().catch(() => ({}));
+  if (!upstream.ok) throw new Error(payload.error || payload.message || `Jupiter returned HTTP ${upstream.status}`);
+  return payload;
+}
+app.get('/api/swap/order', async (req, res) => {
+  try {
+    const { inputMint, outputMint, amount, taker } = req.query;
+    if (![inputMint, outputMint, amount].every(Boolean)) return res.status(400).json({ error: 'inputMint, outputMint and amount are required.' });
+    if (!/^\d+$/.test(String(amount)) || Number(amount) <= 0) return res.status(400).json({ error: 'Amount must be a positive integer in base units.' });
+    if (String(inputMint).length < 32 || String(inputMint).length > 50 || String(outputMint).length < 32 || String(outputMint).length > 50) return res.status(400).json({ error: 'Invalid token mint address.' });
+    if (taker && (String(taker).length < 32 || String(taker).length > 50)) return res.status(400).json({ error: 'Invalid taker wallet address.' });
+    const params = new URLSearchParams({ inputMint: String(inputMint), outputMint: String(outputMint), amount: String(amount) });
+    if (taker) params.set('taker', String(taker));
+    params.set('maxSupportedTransactionVersion', '0');
+    const order = await jupiterFetch(`${JUPITER_BASE}/order?${params}`);
+    res.set('Cache-Control', 'no-store');
+    res.json(order);
+  } catch (error) { res.status(502).json({ error: `Swap quote unavailable: ${error.message}` }); }
+});
+app.post('/api/swap/execute', async (req, res) => {
+  try {
+    const { signedTransaction, requestId } = req.body || {};
+    if (typeof signedTransaction !== 'string' || signedTransaction.length < 100 || signedTransaction.length > 100000) return res.status(400).json({ error: 'Invalid signed transaction.' });
+    if (typeof requestId !== 'string' || requestId.length < 5 || requestId.length > 200) return res.status(400).json({ error: 'Invalid Jupiter request ID.' });
+    const result = await jupiterFetch(`${JUPITER_BASE}/execute`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ signedTransaction, requestId }) });
+    res.set('Cache-Control', 'no-store');
+    res.json(result);
+  } catch (error) { res.status(502).json({ error: `Swap execution failed: ${error.message}` }); }
+});
 
 app.get('*', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.listen(port, () => console.log(`BLITZ running on port ${port}`));
