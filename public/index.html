@@ -33,7 +33,12 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 <div class="stats"><div class="panel"><div class="statlabel">SOL PRICE</div><div class="statvalue" id="solPriceValue">Loading…</div><div class="statnote" id="solPriceNote">Fetching live SOL/USD price…</div></div><div class="panel"><div class="statlabel">NEW PAIRS · 1H</div><div class="statvalue">146</div><div class="statnote">Illustrative counter</div></div><div class="panel"><div class="statlabel">24H VOLUME</div><div class="statvalue">$8.42M</div><div class="statnote up">+11.8% · sample</div></div><div class="panel"><div class="statlabel">WALLET BALANCE</div><div class="statvalue">— SOL</div><div class="statnote">Not connected</div></div></div>
 <div class="columns"><div class="panel"><div class="panelhead"><h2>Market discovery</h2><div style="display:flex;gap:7px;align-items:center"><span class="badge">SOLANA</span><button class="btn" id="refreshLive" style="padding:7px 10px;font-size:10px">Load live feed</button></div></div><input class="search" id="search" placeholder="Search token, ticker or mint address"><div class="filters"><button class="active" data-filter="Trending">Trending</button><button data-filter="New">New Pairs</button><button data-filter="Movers">Top Movers</button><button data-filter="Graduating">Graduating</button></div><div class="tablehead"><span>TOKEN / ACTIVITY</span><span>MARKET CAP</span><span>VOLUME</span><span>CURVE</span></div><div id="tokens"></div><div class="note">Token names and figures are fictional placeholders, not live quotes.</div></div><div class="stack"><div class="panel" id="detail"><div class="panelhead"><h2>Token details</h2><span class="badge">SELECT TOKEN</span></div><div class="empty">Select a token to view stats and bonding curve.</div></div><div class="panel"><div class="panelhead"><h2>Safety filters</h2><span class="badge">PREVIEW</span></div><div class="switch"><span>Hide flagged tokens</span><input type="checkbox" checked></div><div class="switch"><span>Mint authority revoked</span><input type="checkbox"></div><div class="switch"><span>Freeze authority revoked</span><input type="checkbox"></div><div class="switch"><span>Minimum liquidity $5K</span><input type="checkbox"></div><div class="note">Filters become active after on-chain scanner integration.</div></div></div></div></section>
 <section class="view" id="view-trending"><div class="heading"><div><div class="label">MOMENTUM RADAR</div><h1>Trending</h1><div class="desc">Tokens gaining attention across the sample feed.</div></div><span class="badge">SAMPLE RANKINGS</span></div><div class="panel"><div class="panelhead"><h2>Trending tokens</h2></div><div id="trendinglist"></div></div></section>
-<section class="view" id="view-newpairs"><div class="heading"><div><div class="label">EARLY DISCOVERY</div><h1>New Pairs</h1><div class="desc">Fresh pair activity, pool age and liquidity.</div></div></div><div class="panel"><div class="panelhead"><h2>Recently created pairs</h2></div><div id="newlist"></div></div></section>
+<section class="view" id="view-newpairs"><div class="heading"><div><div class="label">EARLY DISCOVERY</div><h1>New Pairs</h1><div class="desc">Fresh pair activity, pool age and liquidity.</div></div></div><div class="panel" style="margin-bottom:12px">
+<div class="panelhead"><h2>Live Pump.fun launches</h2><span class="badge" id="launchStatus">CONNECTING</span></div>
+<div class="desc" style="margin-bottom:12px">Live token creation events from PumpPortal. Detection only — no trades are placed.</div>
+<div id="launchList"><div class="empty">Connecting to the live launch stream…</div></div>
+</div>
+<div class="panel"><div class="panelhead"><h2>Recently created pairs</h2></div><div id="newlist"></div></div></section>
 <section class="view" id="view-sniper"><div class="heading"><div><div class="label">TRADE EXECUTION</div><h1>Sniper</h1><div class="desc">Configure manual entries and automated rules. Preview only.</div></div><span class="badge">PAPER MODE</span></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Order configuration</h2></div><div class="filters"><button class="active" id="manual">Manual Buy</button><button id="auto">Auto Sniper</button></div><div id="manualbox"><label class="field">Token mint address<input id="mint" placeholder="Paste token mint"></label><div class="two"><label class="field">Buy amount (SOL)<input id="amount" type="number" min=".001" value=".1" step=".001"></label><label class="field">Slippage<select><option>10%</option><option>15%</option><option>20%</option></select></label></div><div class="two"><label class="field">Priority fee<select><option>High</option><option>Very high</option></select></label><label class="field">Max price impact<select><option>5%</option><option>10%</option></select></label></div><button class="btn wide" id="preview">Preview paper buy</button><div class="note" id="previewmsg">No transaction will be sent.</div></div><div id="autobox" style="display:none"><div class="two"><label class="field">Max market cap ($)<input type="number" value="35000"></label><label class="field">Minimum liquidity ($)<input type="number" value="8000"></label></div><div class="two"><label class="field">Max buy / token (SOL)<input type="number" value=".1"></label><label class="field">Daily cap (SOL)<input type="number" value=".5"></label></div><div class="switch"><span>Require mint authority revoked</span><input type="checkbox" checked></div><div class="switch"><span>Require freeze authority revoked</span><input type="checkbox" checked></div><div class="switch"><span>Block concentrated holders</span><input type="checkbox" checked></div><button class="btn wide" id="saveauto">Save paper rules</button><div class="note" id="automsg">Automation remains disabled.</div></div></div><div class="stack"><div class="panel"><div class="panelhead"><h2>Execution safeguards</h2></div><div class="row"><span>Trading mode</span><b class="up">Paper only</b></div><div class="row"><span>Wallet signing</span><b>Disabled</b></div><div class="row"><span>Daily loss limit</span><b>Not set</b></div><div class="row"><span>Emergency stop</span><b>Planned</b></div></div><div class="panel"><h2 style="font-size:13px">Execution preview</h2><div class="empty">Order details appear here after preview.</div></div></div></div></section>
 <section class="view" id="view-meme"><div class="heading"><div><div class="label">MEME RADAR</div><h1>Meme Zone</h1><div class="desc">Browse token launches by lifecycle stage.</div></div></div><div class="panel"><div class="filters"><button class="active">Trending</button><button>New Pairs</button><button>Degen Zone</button><button>New Creations</button><button>Graduating</button><button>Graduated</button></div><div class="empty">Live market indexing will populate this section.</div></div></section>
 <section class="view" id="view-wallets"><div class="heading"><div><div class="label">ON-CHAIN RESEARCH</div><h1>Wallet Tracker</h1><div class="desc">Add addresses to a local watchlist.</div></div></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Track a wallet</h2></div><input class="search" id="walletaddr" placeholder="Paste Solana wallet address"><button class="btn wide" id="addwallet">Add to watchlist</button><div class="note" id="walletmsg">Address stays in this page session; no chain lookup is performed.</div><div id="watchlist" style="margin-top:14px"><div class="walletrow"><b>EarlyBird.sol</b><span class="tag">SAMPLE</span></div><div class="walletrow"><b>BlueWhale.sol</b><span class="tag">SAMPLE</span></div></div></div><div class="panel"><div class="panelhead"><h2>Trader Lens</h2></div><div class="row"><span>Win rate</span><b>—</b></div><div class="row"><span>Realized PnL</span><b>—</b></div><div class="row"><span>Average hold time</span><b>—</b></div><div class="note">Wallet analytics require an on-chain data provider.</div></div></div></section>
@@ -163,6 +168,7 @@ document.getElementById("phantom").onclick=connectPhantom;
 walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
 window.addEventListener("load",async()=>{
   loadLiveSolPrice();
+  startLaunchStream();
   setInterval(loadLiveSolPrice,30000);
   phantomProvider=getPhantomProvider();
   if(phantomProvider){
@@ -173,6 +179,47 @@ window.addEventListener("load",async()=>{
 });
 
 
+
+
+function escapeLaunchText(value){
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function renderLaunches(items){
+  const target=document.getElementById('launchList');
+  if(!target)return;
+  if(!items.length){target.innerHTML='<div class="empty">Waiting for new Pump.fun launches…</div>';return;}
+  target.innerHTML=items.map(t=>`
+    <div class="tokenrow" style="grid-template-columns:minmax(0,1.5fr) minmax(90px,.8fr) auto;gap:10px">
+      <div class="token"><div class="avatar">⚡</div><div style="min-width:0"><div class="tokenname">${escapeLaunchText(t.name)}</div><div class="ticker">${escapeLaunchText(t.symbol)} · ${escapeLaunchText(t.mint.slice(0,5)+'…'+t.mint.slice(-5))}</div></div></div>
+      <div><div class="number">${Number(t.marketCapSol||0).toFixed(2)} SOL</div><div class="tiny">Initial market cap</div></div>
+      <button class="filters" style="margin:0;border:1px solid var(--line);background:#0b2037;color:var(--text);border-radius:7px;padding:7px 9px" data-copy-mint="${escapeLaunchText(t.mint)}">Copy mint</button>
+    </div>`).join('');
+  target.querySelectorAll('[data-copy-mint]').forEach(btn=>btn.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(btn.dataset.copyMint);btn.textContent='Copied';}
+    catch(e){btn.textContent='Copy unavailable';}
+  }));
+}
+function startLaunchStream(){
+  const status=document.getElementById('launchStatus');
+  if(!window.EventSource||!status)return;
+  const stream=new EventSource('/api/launches/stream');
+  stream.addEventListener('status',e=>{
+    const d=JSON.parse(e.data);status.textContent=d.status.toUpperCase();
+    status.style.color=d.status==='connected'?'var(--mint)':'var(--amber)';
+  });
+  stream.addEventListener('snapshot',e=>renderLaunches(JSON.parse(e.data).launches||[]));
+  stream.addEventListener('newToken',e=>{
+    const item=JSON.parse(e.data).payload||{};
+    const current=window.blitzLaunches||[];
+    if(item.mint&&!current.some(x=>x.mint===item.mint)){
+      current.unshift({mint:item.mint,name:item.name,symbol:item.symbol,marketCapSol:item.marketCapSol,createdAt:Date.now()});
+      window.blitzLaunches=current.slice(0,100);renderLaunches(window.blitzLaunches);
+    }
+  });
+  stream.onerror=()=>{status.textContent='RECONNECTING';status.style.color='var(--amber)'};
+  window.addEventListener('beforeunload',()=>stream.close(),{once:true});
+}
+window.blitzLaunches=[];
 
 async function loadLiveSolPrice(){
   const value=document.getElementById("solPriceValue");
