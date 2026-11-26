@@ -30,7 +30,7 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 <button class="active" data-view="home"><i>⌂</i>Home</button><button data-view="trending"><i>↗</i>Trending</button><button data-view="newpairs"><i>✧</i>New Pairs</button><button data-view="sniper"><i>ϟ</i>Sniper</button><button data-view="meme"><i>◎</i>Meme Zone</button><div class="navtitle">INTELLIGENCE</div><button data-view="wallets"><i>⌖</i>Wallet Tracker</button><button data-view="copy"><i>▢</i>Copy Trade</button><button data-view="portfolio"><i>▤</i>Portfolio</button><button id="backLanding"><i>←</i>Back to landing</button></nav><div class="sidefoot"><b>● SIMULATION ENVIRONMENT</b><p>Sample data only. Live wallet signing and execution are not enabled.</p></div></aside>
 <main>
 <section class="view active" id="view-home"><div class="heading"><div><div class="label">MARKET OVERVIEW</div><h1>Welcome to BLITZ.</h1><div class="desc">Your Solana discovery and trading workspace.</div></div><span class="badge" id="feedStatus">SAMPLE DATA</span></div>
-<div class="stats"><div class="panel"><div class="statlabel">SOL PRICE</div><div class="statvalue">$184.62</div><div class="statnote up">+2.41% · sample</div></div><div class="panel"><div class="statlabel">NEW PAIRS · 1H</div><div class="statvalue">146</div><div class="statnote">Illustrative counter</div></div><div class="panel"><div class="statlabel">24H VOLUME</div><div class="statvalue">$8.42M</div><div class="statnote up">+11.8% · sample</div></div><div class="panel"><div class="statlabel">WALLET BALANCE</div><div class="statvalue">— SOL</div><div class="statnote">Not connected</div></div></div>
+<div class="stats"><div class="panel"><div class="statlabel">SOL PRICE</div><div class="statvalue" id="solPriceValue">Loading…</div><div class="statnote" id="solPriceNote">Fetching live SOL/USD price…</div></div><div class="panel"><div class="statlabel">NEW PAIRS · 1H</div><div class="statvalue">146</div><div class="statnote">Illustrative counter</div></div><div class="panel"><div class="statlabel">24H VOLUME</div><div class="statvalue">$8.42M</div><div class="statnote up">+11.8% · sample</div></div><div class="panel"><div class="statlabel">WALLET BALANCE</div><div class="statvalue">— SOL</div><div class="statnote">Not connected</div></div></div>
 <div class="columns"><div class="panel"><div class="panelhead"><h2>Market discovery</h2><div style="display:flex;gap:7px;align-items:center"><span class="badge">SOLANA</span><button class="btn" id="refreshLive" style="padding:7px 10px;font-size:10px">Load live feed</button></div></div><input class="search" id="search" placeholder="Search token, ticker or mint address"><div class="filters"><button class="active" data-filter="Trending">Trending</button><button data-filter="New">New Pairs</button><button data-filter="Movers">Top Movers</button><button data-filter="Graduating">Graduating</button></div><div class="tablehead"><span>TOKEN / ACTIVITY</span><span>MARKET CAP</span><span>VOLUME</span><span>CURVE</span></div><div id="tokens"></div><div class="note">Token names and figures are fictional placeholders, not live quotes.</div></div><div class="stack"><div class="panel" id="detail"><div class="panelhead"><h2>Token details</h2><span class="badge">SELECT TOKEN</span></div><div class="empty">Select a token to view stats and bonding curve.</div></div><div class="panel"><div class="panelhead"><h2>Safety filters</h2><span class="badge">PREVIEW</span></div><div class="switch"><span>Hide flagged tokens</span><input type="checkbox" checked></div><div class="switch"><span>Mint authority revoked</span><input type="checkbox"></div><div class="switch"><span>Freeze authority revoked</span><input type="checkbox"></div><div class="switch"><span>Minimum liquidity $5K</span><input type="checkbox"></div><div class="note">Filters become active after on-chain scanner integration.</div></div></div></div></section>
 <section class="view" id="view-trending"><div class="heading"><div><div class="label">MOMENTUM RADAR</div><h1>Trending</h1><div class="desc">Tokens gaining attention across the sample feed.</div></div><span class="badge">SAMPLE RANKINGS</span></div><div class="panel"><div class="panelhead"><h2>Trending tokens</h2></div><div id="trendinglist"></div></div></section>
 <section class="view" id="view-newpairs"><div class="heading"><div><div class="label">EARLY DISCOVERY</div><h1>New Pairs</h1><div class="desc">Fresh pair activity, pool age and liquidity.</div></div></div><div class="panel"><div class="panelhead"><h2>Recently created pairs</h2></div><div id="newlist"></div></div></section>
@@ -162,6 +162,8 @@ document.getElementById("closeWallet").onclick=()=>walletShade.style.display="no
 document.getElementById("phantom").onclick=connectPhantom;
 walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
 window.addEventListener("load",async()=>{
+  loadLiveSolPrice();
+  setInterval(loadLiveSolPrice,60000);
   phantomProvider=getPhantomProvider();
   if(phantomProvider){
     try{const r=await phantomProvider.connect({onlyIfTrusted:true});const key=r?.publicKey||phantomProvider.publicKey;if(key)setWalletConnected(key);}catch(e){}
@@ -169,6 +171,25 @@ window.addEventListener("load",async()=>{
     phantomProvider.on?.("disconnect",disconnectPhantom);
   }
 });
+
+
+async function loadLiveSolPrice(){
+  const value=document.getElementById("solPriceValue");
+  const note=document.getElementById("solPriceNote");
+  if(!value||!note)return;
+  try{
+    const response=await fetch("/api/sol-price",{cache:"no-store"});
+    if(!response.ok)throw new Error("Price provider unavailable");
+    const data=await response.json();
+    value.textContent=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(data.price);
+    note.textContent=(data.change24h>=0?"+":"")+data.change24h.toFixed(2)+"% · live via "+data.source;
+    note.className="statnote "+(data.change24h>=0?"up":"down");
+    note.title="Updated "+new Date(data.updatedAt).toLocaleTimeString();
+  }catch(error){
+    note.textContent="Live price unavailable · retrying";
+    note.className="statnote";
+  }
+}
 
 async function loadLiveFeed(){const b=document.getElementById("refreshLive"),status=document.getElementById("feedStatus");b.disabled=true;b.textContent="Loading…";status.textContent="FETCHING LIVE DATA";try{const r=await fetch("/api/markets/latest");if(!r.ok)throw new Error("Market feed unavailable ("+r.status+")");const payload=await r.json();if(!payload.tokens||!payload.tokens.length)throw new Error("No Solana pairs returned by provider");coins.splice(0,coins.length,...payload.tokens.map(t=>({n:t.name||"Unknown token",s:t.symbol||"—",a:"◈",age:t.age||"—",mc:Number(t.marketCap||0),v:Number(t.volume24h||0),l:Number(t.liquidity||0),h:0,c:0,ch:Number(t.change24h||0),address:t.address||"",url:t.url||""})));chosen=0;liveMode=true;status.textContent="LIVE · DEXSCREENER";b.textContent="Refresh feed";render();detail();document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,10).map(t=>tokenrow(t,coins.indexOf(t))).join("");}catch(e){status.textContent="SAMPLE DATA · LIVE FEED FAILED";b.textContent="Retry live feed";alert(e.message+". The sample feed remains visible.")}finally{b.disabled=false}}
 document.getElementById("refreshLive").onclick=loadLiveFeed;
