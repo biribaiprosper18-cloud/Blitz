@@ -38,11 +38,11 @@ main{min-width:0;padding:23px;max-width:1500px;width:100%;margin:0 auto}.view{di
 <section class="view" id="view-meme"><div class="heading"><div><div class="label">MEME RADAR</div><h1>Meme Zone</h1><div class="desc">Browse token launches by lifecycle stage.</div></div></div><div class="panel"><div class="filters"><button class="active">Trending</button><button>New Pairs</button><button>Degen Zone</button><button>New Creations</button><button>Graduating</button><button>Graduated</button></div><div class="empty">Live market indexing will populate this section.</div></div></section>
 <section class="view" id="view-wallets"><div class="heading"><div><div class="label">ON-CHAIN RESEARCH</div><h1>Wallet Tracker</h1><div class="desc">Add addresses to a local watchlist.</div></div></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Track a wallet</h2></div><input class="search" id="walletaddr" placeholder="Paste Solana wallet address"><button class="btn wide" id="addwallet">Add to watchlist</button><div class="note" id="walletmsg">Address stays in this page session; no chain lookup is performed.</div><div id="watchlist" style="margin-top:14px"><div class="walletrow"><b>EarlyBird.sol</b><span class="tag">SAMPLE</span></div><div class="walletrow"><b>BlueWhale.sol</b><span class="tag">SAMPLE</span></div></div></div><div class="panel"><div class="panelhead"><h2>Trader Lens</h2></div><div class="row"><span>Win rate</span><b>—</b></div><div class="row"><span>Realized PnL</span><b>—</b></div><div class="row"><span>Average hold time</span><b>—</b></div><div class="note">Wallet analytics require an on-chain data provider.</div></div></div></section>
 <section class="view" id="view-copy"><div class="heading"><div><div class="label">RULE-BASED MIRRORING</div><h1>Copy Trade</h1><div class="desc">Set copy-trading parameters for a future simulation.</div></div><span class="badge">NOT ACTIVE</span></div><div class="columns"><div class="panel"><div class="panelhead"><h2>Copy settings</h2></div><label class="field">Wallet address<input placeholder="Wallet to follow"></label><div class="two"><label class="field">Fixed buy size (SOL)<input type="number" value=".05"></label><label class="field">Daily cap (SOL)<input type="number" value=".25"></label></div><div class="switch"><span>Mirror buys</span><input type="checkbox" checked></div><div class="switch"><span>Mirror sells</span><input type="checkbox" checked></div><div class="switch"><span>Skip low liquidity</span><input type="checkbox" checked></div><button class="btn wide" id="copySave">Save simulation rule</button><div class="note" id="copymsg">No copy trades are running.</div></div><div class="panel"><h2 style="font-size:13px">Safety checklist</h2><div class="row"><span>Per-wallet spend cap</span><b>Required</b></div><div class="row"><span>Token denylist</span><b>Recommended</b></div><div class="row"><span>Slippage limits</span><b>Required</b></div><div class="row"><span>Wallet-signed approval</span><b>Required</b></div></div></div></section>
-<section class="view" id="view-portfolio"><div class="heading"><div><div class="label">PERFORMANCE</div><h1>Portfolio</h1><div class="desc">Positions and PnL overview.</div></div></div><div class="stats"><div class="panel"><div class="statlabel">TOTAL VALUE</div><div class="statvalue">—</div><div class="statnote">Wallet not connected</div></div><div class="panel"><div class="statlabel">UNREALIZED PNL</div><div class="statvalue">—</div><div class="statnote">No positions</div></div><div class="panel"><div class="statlabel">REALIZED PNL</div><div class="statvalue">—</div><div class="statnote">No history</div></div><div class="panel"><div class="statlabel">OPEN POSITIONS</div><div class="statvalue">0</div><div class="statnote">Paper mode</div></div></div><div class="panel"><div class="panelhead"><h2>Open positions</h2><span class="badge">EMPTY</span></div><div class="empty">No open positions yet.</div></div></section>
+<section class="view" id="view-portfolio"><div class="heading"><div><div class="label">PERFORMANCE</div><h1>Portfolio</h1><div class="desc">Positions and PnL overview.</div></div></div><div class="stats"><div class="panel"><div class="statlabel">TOTAL VALUE</div><div class="statvalue">—</div><div class="statnote">Wallet not connected</div></div><div class="panel"><div class="statlabel">UNREALIZED PNL</div><div class="statvalue">—</div><div class="statnote">No positions</div></div><div class="panel"><div class="statlabel">REALIZED PNL</div><div class="statvalue">—</div><div class="statnote">No history</div></div><div class="panel"><div class="statlabel">OPEN POSITIONS</div><div class="statvalue">0</div><div class="statnote">Paper mode</div></div></div><div class="panel"><div class="panelhead"><h2>Token holdings</h2><div style="display:flex;gap:7px;align-items:center"><span class="badge" id="holdingsCount">WAITING FOR WALLET</span><button class="btn" id="refreshWallet" style="padding:6px 9px;font-size:9px">Refresh</button></div></div><div id="holdings"><div class="empty">Connect Phantom to load your SOL and SPL token balances.</div></div><div class="note" id="portfolioUpdated"></div></div></section>
 </main></div></div>
 <nav class="mobilebar"><button class="active" data-view="home"><b>⌂</b>Home</button><button data-view="trending"><b>↗</b>Trending</button><button data-view="sniper"><b>ϟ</b>Sniper</button><button data-view="wallets"><b>⌖</b>Wallets</button><button data-view="portfolio"><b>▤</b>Portfolio</button></nav>
 <div class="drawerShade" id="drawerShade"><div class="drawer"><div class="drawerhead"><div class="brand"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><button class="close" id="closeDrawer">×</button></div><nav class="drawerlinks"><button data-view="home">⌂ &nbsp; Home</button><button data-view="trending">↗ &nbsp; Trending</button><button data-view="newpairs">✧ &nbsp; New Pairs</button><button data-view="sniper">ϟ &nbsp; Sniper</button><button data-view="meme">◎ &nbsp; Meme Zone</button><button data-view="wallets">⌖ &nbsp; Wallet Tracker</button><button data-view="copy">▢ &nbsp; Copy Trade</button><button data-view="portfolio">▤ &nbsp; Portfolio</button></nav></div></div>
-<div class="modalShade" id="walletShade"><div class="modal"><div class="modalhead">Connect Wallet <button class="close" id="closeWallet">×</button></div><div class="modalbody"><div class="balance">● &nbsp; BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.</div><button class="phantom" id="phantom"><span class="phantomlogo">◉</span><span><strong>Phantom Wallet</strong><small>Connect using Phantom</small></span><span style="margin-left:auto;color:#63d9bb;font-size:28px">›</span></button><div class="terms">Demo preview: wallet connection is not active. Never share your recovery phrase or private key.</div></div></div></div>
+<div class="modalShade" id="walletShade"><div class="modal"><div class="modalhead">Connect Wallet <button class="close" id="closeWallet">×</button></div><div class="modalbody"><div class="balance">● &nbsp; BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.</div><button class="phantom" id="phantom"><span class="phantomlogo">◉</span><span><strong>Phantom Wallet</strong><small id="phantomHint">Connect securely with Phantom</small></span><span style="margin-left:auto;color:#63d9bb;font-size:28px">›</span></button><div class="terms">On iPhone, Phantom opens this site in its in-app browser. Then approve the connection in Phantom.<br><br>Connect securely through Phantom. BLITZ can view your public address and request approvals; it never sees your recovery phrase or private key.</div></div></div></div>
 <script>
 const coins=[{n:"Frog Engine",s:"FROGE",a:"🐸",age:"38s",mc:18200,v:94000,l:9100,h:86,c:22,ch:48},{n:"Blue Comet",s:"BCOMET",a:"☄️",age:"2m",mc:47200,v:221000,l:18400,h:214,c:41,ch:32},{n:"Pixel Ape",s:"PAPE",a:"🦍",age:"7m",mc:91300,v:510000,l:32000,h:592,c:68,ch:21},{n:"Night Shift",s:"SHIFT",a:"🌙",age:"19m",mc:214000,v:780000,l:54000,h:1040,c:91,ch:17},{n:"Turbo Toast",s:"TOAST",a:"🍞",age:"1h",mc:67000,v:190000,l:21000,h:386,c:54,ch:-8},{n:"Orbit Cat",s:"OCAT",a:"🐈",age:"3h",mc:382000,v:1300000,l:89000,h:2100,c:100,ch:12}];let chosen=0,filter="Trending",liveMode=false;
 const fmt=n=>n>=1e6?"$"+(n/1e6).toFixed(2)+"M":n>=1e3?"$"+(n/1e3).toFixed(1)+"K":"$"+n;
@@ -58,7 +58,118 @@ document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch
 document.getElementById("manual").onclick=()=>{manualbox.style.display="block";autobox.style.display="none";manual.classList.add("active");auto.classList.remove("active")};document.getElementById("auto").onclick=()=>{manualbox.style.display="none";autobox.style.display="block";auto.classList.add("active");manual.classList.remove("active")};
 document.getElementById("preview").onclick=()=>{let n=+amount.value;previewmsg.textContent=n>=.001&&n<=10?`Paper preview: ${n} SOL allocated to ${mint.value||coins[chosen].s}. No transaction sent.`:"Enter an amount from 0.001 to 10 SOL."};document.getElementById("saveauto").onclick=()=>automsg.textContent="Paper rules saved for this session. Automated execution remains disabled.";
 document.getElementById("addwallet").onclick=()=>{let v=walletaddr.value.trim();if(v.length<32){walletmsg.textContent="Enter a valid-looking Solana address.";return}watchlist.innerHTML+=`<div class="walletrow"><b>${v.slice(0,6)}…${v.slice(-5)}</b><span class="tag">LOCAL</span></div>`;walletmsg.textContent="Added to temporary watchlist. No chain lookup performed.";walletaddr.value=""};document.getElementById("copySave").onclick=()=>copymsg.textContent="Simulation rule saved for this session. No wallet is monitored and no trades execute.";
-document.getElementById("walletBtn").onclick=()=>document.getElementById("walletShade").style.display="flex";document.getElementById("closeWallet").onclick=()=>document.getElementById("walletShade").style.display="none";document.getElementById("phantom").onclick=()=>alert("Phantom connection is not active in this prototype. Never share your seed phrase or private key.");document.getElementById("walletShade").addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
+
+const walletBtn=document.getElementById("walletBtn");
+const walletShade=document.getElementById("walletShade");
+let phantomProvider=null, connectedAddress=null;
+function getPhantomProvider(){
+  const p=window.phantom?.solana || window.solana;
+  return p && p.isPhantom ? p : null;
+}
+function shortAddress(s){return s ? s.slice(0,4)+"…"+s.slice(-4) : "";}
+function setWalletConnected(pubkey){
+  connectedAddress=pubkey.toString();
+  walletBtn.textContent=shortAddress(connectedAddress);
+  walletBtn.title=connectedAddress+" · Click to disconnect";
+  document.getElementById("phantomHint").textContent="Connected: "+shortAddress(connectedAddress);
+  document.querySelector(".terms").textContent="Wallet connected. BLITZ will never ask for your recovery phrase or private key.";
+  document.querySelector(".balance").textContent="Connected wallet: "+connectedAddress;
+  walletShade.style.display="none";
+  loadWalletBalance();
+}
+async function loadWalletBalance(){
+  if(!connectedAddress)return;
+  const homeStat=document.querySelector("#view-home .stats .panel:last-child .statvalue");
+  const homeNote=document.querySelector("#view-home .stats .panel:last-child .statnote");
+  if(homeStat)homeStat.textContent="Loading…";
+  if(homeNote)homeNote.textContent="Fetching public wallet data";
+  const holdings=document.getElementById("holdings");
+  if(holdings)holdings.innerHTML='<div class="empty">Loading SOL and token balances…</div>';
+  try{
+    const response=await fetch("/api/wallet/"+encodeURIComponent(connectedAddress),{cache:"no-store"});
+    const data=await response.json();
+    if(!response.ok)throw new Error(data.detail || data.error || "Wallet data request failed");
+    const sol=Number(data.sol||0);
+    if(homeStat)homeStat.textContent=sol.toLocaleString(undefined,{maximumFractionDigits:4})+" SOL";
+    if(homeNote)homeNote.textContent="Live balance · "+shortAddress(connectedAddress);
+    const portfolioStats=document.querySelectorAll("#view-portfolio .stats .panel");
+    if(portfolioStats[0]){
+      portfolioStats[0].querySelector(".statvalue").textContent=sol.toLocaleString(undefined,{maximumFractionDigits:4})+" SOL";
+      portfolioStats[0].querySelector(".statnote").textContent="SOL balance · USD valuation not yet enabled";
+    }
+    if(portfolioStats[1])portfolioStats[1].querySelector(".statnote").textContent="Token prices not yet valued";
+    if(portfolioStats[2])portfolioStats[2].querySelector(".statnote").textContent="Trading history integration pending";
+    if(portfolioStats[3])portfolioStats[3].querySelector(".statvalue").textContent=String(data.tokenCount||0);
+    const tokenList=data.tokens||[];
+    document.getElementById("holdingsCount").textContent=tokenList.length+" TOKENS";
+    if(!tokenList.length){
+      holdings.innerHTML='<div class="walletrow"><div><b>Solana (SOL)</b><div class="ticker">Native balance</div></div><b>'+sol.toLocaleString(undefined,{maximumFractionDigits:6})+' SOL</b></div><div class="empty">No SPL token balances found for this wallet.</div>';
+    }else{
+      holdings.innerHTML='<div class="walletrow"><div><b>Solana (SOL)</b><div class="ticker">Native balance</div></div><b>'+sol.toLocaleString(undefined,{maximumFractionDigits:6})+' SOL</b></div>'+tokenList.map(t=>'<div class="walletrow"><div style="min-width:0"><b>'+t.mint.slice(0,6)+'…'+t.mint.slice(-5)+'</b><div class="ticker">Mint address</div></div><b>'+Number(t.amount).toLocaleString(undefined,{maximumFractionDigits:6})+'</b></div>').join("");
+    }
+    document.getElementById("portfolioUpdated").textContent="Balances refreshed "+new Date(data.updatedAt).toLocaleTimeString()+" · token prices and USD total are not yet included.";
+  }catch(err){
+    if(homeStat)homeStat.textContent="Unavailable";
+    if(homeNote)homeNote.textContent="Tap wallet address to retry";
+    if(holdings)holdings.innerHTML='<div class="empty">Could not load wallet balances: '+String(err.message||err).replace(/[<>&"]/g,'')+'. Try Refresh in a few seconds.</div>';
+    console.error("BLITZ portfolio load failed",err);
+  }
+}
+async function connectPhantom(){
+  phantomProvider=getPhantomProvider();
+  if(!phantomProvider){
+    const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if(isIOS){
+      const browseUrl="https://phantom.app/ul/browse/"+encodeURIComponent(window.location.href)+"?ref="+encodeURIComponent(window.location.origin);
+      window.location.href=browseUrl;
+      return;
+    }
+    alert("Phantom was not detected. Install the official Phantom browser extension, then reload BLITZ. Never enter your recovery phrase on this website.");
+    return;
+  }
+  try{
+    const response=await phantomProvider.connect();
+    const key=response?.publicKey || phantomProvider.publicKey;
+    if(!key)throw new Error("Phantom did not return a public address.");
+    setWalletConnected(key);
+  }catch(err){
+    if(err?.code===4001)return;
+    alert("Phantom connection failed: "+(err?.message || "Unknown error")+". Make sure BLITZ is open inside Phantom browser on iPhone, then try again.");
+  }
+}
+async function disconnectPhantom(){
+  try{if(phantomProvider?.disconnect)await phantomProvider.disconnect();}catch(e){}
+  connectedAddress=null;
+  walletBtn.textContent="Connect wallet";
+  walletBtn.title="";
+  document.getElementById("phantomHint").textContent="Connect securely with Phantom";
+  document.querySelector(".terms").textContent="Connect securely through Phantom. BLITZ can view your public address and request approvals; it never sees your recovery phrase or private key.";
+  document.querySelector(".balance").textContent="BLITZ does not require a minimum balance to explore. Network fees may apply when live trading is eventually enabled.";
+  const stat=document.querySelector("#view-home .stats .panel:last-child .statvalue");
+  if(stat)stat.textContent="— SOL";
+  const note=document.querySelector("#view-home .stats .panel:last-child .statnote");
+  if(note)note.textContent="Not connected";
+  const pstats=document.querySelectorAll("#view-portfolio .stats .panel");
+  if(pstats[0]){pstats[0].querySelector(".statvalue").textContent="—";pstats[0].querySelector(".statnote").textContent="Wallet not connected";}
+  if(pstats[3])pstats[3].querySelector(".statvalue").textContent="0";
+  document.getElementById("holdingsCount").textContent="WAITING FOR WALLET";
+  document.getElementById("holdings").innerHTML='<div class="empty">Connect Phantom to load your SOL and SPL token balances.</div>';
+  document.getElementById("portfolioUpdated").textContent="";
+}
+walletBtn.onclick=()=>{if(connectedAddress){if(confirm("Disconnect your Phantom wallet from BLITZ?"))disconnectPhantom();}else walletShade.style.display="flex";};
+document.getElementById("refreshWallet").onclick=()=>{if(connectedAddress)loadWalletBalance();else alert("Connect Phantom first.");};
+document.getElementById("closeWallet").onclick=()=>walletShade.style.display="none";
+document.getElementById("phantom").onclick=connectPhantom;
+walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
+window.addEventListener("load",async()=>{
+  phantomProvider=getPhantomProvider();
+  if(phantomProvider){
+    try{const r=await phantomProvider.connect({onlyIfTrusted:true});const key=r?.publicKey||phantomProvider.publicKey;if(key)setWalletConnected(key);}catch(e){}
+    phantomProvider.on?.("accountChanged",key=>{if(key)setWalletConnected(key);else disconnectPhantom();});
+    phantomProvider.on?.("disconnect",disconnectPhantom);
+  }
+});
+
 async function loadLiveFeed(){const b=document.getElementById("refreshLive"),status=document.getElementById("feedStatus");b.disabled=true;b.textContent="Loading…";status.textContent="FETCHING LIVE DATA";try{const r=await fetch("/api/markets/latest");if(!r.ok)throw new Error("Market feed unavailable ("+r.status+")");const payload=await r.json();if(!payload.tokens||!payload.tokens.length)throw new Error("No Solana pairs returned by provider");coins.splice(0,coins.length,...payload.tokens.map(t=>({n:t.name||"Unknown token",s:t.symbol||"—",a:"◈",age:t.age||"—",mc:Number(t.marketCap||0),v:Number(t.volume24h||0),l:Number(t.liquidity||0),h:0,c:0,ch:Number(t.change24h||0),address:t.address||"",url:t.url||""})));chosen=0;liveMode=true;status.textContent="LIVE · DEXSCREENER";b.textContent="Refresh feed";render();detail();document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,10).map(t=>tokenrow(t,coins.indexOf(t))).join("");}catch(e){status.textContent="SAMPLE DATA · LIVE FEED FAILED";b.textContent="Retry live feed";alert(e.message+". The sample feed remains visible.")}finally{b.disabled=false}}
 document.getElementById("refreshLive").onclick=loadLiveFeed;
 render();detail();
