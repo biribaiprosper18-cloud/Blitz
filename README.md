@@ -1,4 +1,4 @@
-# BLITZ v0.7.2 — Wallet connection and balance reliability
+# BLITZ v0.7.3 — Wallet connection and balance reliability
 
 ## Fixes
 - Solana wallet balance API now tries a primary RPC and a fallback RPC endpoint.
@@ -11,7 +11,7 @@
 1. Extract this ZIP.
 2. Replace all files in the GitHub repository connected to the existing Render service.
 3. Commit and push; wait for Render to finish deploying.
-4. Open `https://YOUR-EXISTING-DOMAIN/api/health` and confirm version `0.7.2`.
+4. Open `https://YOUR-EXISTING-DOMAIN/api/health` and confirm version `0.7.3`.
 5. Open the site inside Phantom's in-app browser on iPhone, connect, then open Portfolio and tap Refresh.
 
 ## Optional production RPC
@@ -22,3 +22,7 @@ For more reliable requests, add a Render environment variable named `SOLANA_RPC_
 - Does not calculate full USD portfolio value yet.
 - Does not request signatures or send transactions.
 - Never enter or share a seed phrase or private key.
+
+
+## Visual update
+BLITZ now uses a dark charcoal and neon-green accent palette. Wallet connection and balance functionality are unchanged.
