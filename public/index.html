@@ -142,15 +142,15 @@ main{background:#f7f7fc}
  .home-market .panelhead{gap:8px}
  .home-market .panelhead h2{font-size:18px}
 }
-</style></head><body>
-<header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
+.modalShade#walletShade{z-index:9999!important;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}.modalShade#walletShade .modal{max-height:88vh;overflow:auto;width:min(100%,520px);margin:auto}\n</style></head><body>
+<header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn" type="button" onclick="window.openBlitzWalletPicker()">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
 <div class="landing" id="landing">
 <section class="hero"><div class="orb"></div><span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span><span class="particle p4"></span><div class="hero-inner">
 <div class="eyebrow">ϟ &nbsp; Built for focused Solana traders</div>
 <h1>Precision<br>Execution.<br><span class="gradient">Unmatched<br class="mobilebreak"> Intelligence.</span></h1>
 <p>BLITZ brings live token discovery, market tracking, automated sniper tools, wallet research, and portfolio activity into one focused workspace.</p>
 <div class="walletprompt">▣ &nbsp; Connect a <b>Solana wallet</b> to unlock the BLITZ workspace.</div>
-<div class="cta-row"><button class="cta" id="enterApp">Connect wallet to continue</button><button class="cta secondary" id="featuresBtn">Explore features</button></div>
+<div class="cta-row"><button class="cta" id="enterApp" type="button" onclick="window.openBlitzWalletPicker()">Connect wallet to continue</button><button class="cta secondary" id="featuresBtn">Explore features</button></div>
 </div></section>
 <section class="section" id="features"><div class="eyebrow">ONE FOCUSED WORKSPACE</div><h2>Everything you need to read the market.</h2><p>Discover launches, research wallets and prepare trades from one clean terminal.</p><div class="featuregrid">
 <div class="feature"><div class="ico">↗</div><h3>Trending & New Pairs</h3><p>Surface fresh launches and tokens gaining momentum, with liquidity and market activity in view.</p></div><div class="feature"><div class="ico">ϟ</div><h3>Sniper Tools</h3><p>Configure manual entries, automated rules, exits and risk limits in a dedicated workspace.</p></div><div class="feature"><div class="ico">◎</div><h3>Meme Zone</h3><p>Browse trending memes, new creations, graduating tokens and early-stage launches.</p></div><div class="feature"><div class="ico">▢</div><h3>Copy Trade</h3><p>Build wallet-following rules with per-wallet allocations and safety controls.</p></div><div class="feature"><div class="ico">⌖</div><h3>Wallet Intelligence</h3><p>Review wallet activity and performance when live data is connected.</p></div><div class="feature"><div class="ico">▤</div><h3>Portfolio</h3><p>Keep positions, PnL and trading history together in one place.</p></div></div></section>
@@ -289,7 +289,11 @@ function chooseWallet(name){
     'Trust Wallet':'https://link.trustwallet.com/open_url?coin=501&url='+encoded
   };
   const link=links[name];
-  if(link){window.location.href=link;return;}
+  if(link){
+    const opened=window.open(link,'_blank');
+    if(!opened){window.location.assign(link);}
+    return;
+  }
   document.getElementById('walletTerms').textContent='Could not open '+name+' automatically. Open its official app, use its browser, and visit blitz-solana-terminal.onrender.com.';
 }
 async function connectSelectedWallet(name){
@@ -359,7 +363,15 @@ async function loadWalletBalance(){
     console.error("BLITZ portfolio load failed",err);
   }
 }
-async function connectPhantom(){renderWalletOptions();walletShade.style.display="flex";}
+async function connectPhantom(){renderWalletOptions();walletShade.style.display="flex";walletShade.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}
+window.openBlitzWalletPicker=function(){
+  try{connectPhantom();}
+  catch(error){
+    const shade=document.getElementById('walletShade');
+    if(shade){shade.style.display='flex';shade.setAttribute('aria-hidden','false');}
+    console.error('BLITZ wallet picker error',error);
+  }
+};
 async function disconnectPhantom(){
   try{if(phantomProvider?.disconnect)await phantomProvider.disconnect();}catch(e){}
   connectedAddress=null;connectedWalletName=null;phantomProvider=null;window.blitzSolBalance=undefined;
@@ -384,9 +396,9 @@ async function disconnectPhantom(){
 }
 walletBtn.onclick=()=>{if(connectedAddress){if(confirm("Disconnect your wallet from BLITZ?"))disconnectPhantom();}else connectPhantom();};
 document.getElementById("refreshWallet").onclick=()=>{if(connectedAddress)loadWalletBalance();else alert("Connect your wallet first.");};
-document.getElementById("closeWallet").onclick=()=>walletShade.style.display="none";
+document.getElementById("closeWallet").onclick=()=>{walletShade.style.display="none";walletShade.setAttribute("aria-hidden","true");document.body.style.overflow="";};
 
-walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade")e.currentTarget.style.display="none"});
+walletShade.addEventListener("click",e=>{if(e.target.id==="walletShade"){e.currentTarget.style.display="none";document.body.style.overflow="";}});
 window.addEventListener("load",async()=>{
   loadLiveSolPrice();
   startLaunchStream();
@@ -538,4 +550,9 @@ async function loadLiveSolPrice(){
 async function loadLiveFeed(){const b=document.getElementById("refreshLive"),status=document.getElementById("feedStatus");b.disabled=true;b.textContent="Loading…";status.textContent="FETCHING LIVE DATA";try{const r=await fetch("/api/markets/latest");if(!r.ok)throw new Error("Market feed unavailable ("+r.status+")");const payload=await r.json();if(!payload.tokens||!payload.tokens.length)throw new Error("No Solana pairs returned by provider");coins.splice(0,coins.length,...payload.tokens.map(t=>({n:t.name||"Unknown token",s:t.symbol||"—",a:"◈",age:t.age||"—",mc:Number(t.marketCap||0),v:Number(t.volume24h||0),l:Number(t.liquidity||0),h:0,c:0,ch:Number(t.change24h||0),address:t.address||"",url:t.url||""})));chosen=0;liveMode=true;status.textContent="LIVE · DEXSCREENER";b.textContent="Refresh feed";render();detail();document.getElementById("trendinglist").innerHTML=coins.slice().sort((a,b)=>b.ch-a.ch).map(t=>tokenrow(t,coins.indexOf(t))).join("");document.getElementById("newlist").innerHTML=coins.slice(0,10).map(t=>tokenrow(t,coins.indexOf(t))).join("");}catch(e){status.textContent="SAMPLE DATA · LIVE FEED FAILED";b.textContent="Retry live feed";alert(e.message+". The sample feed remains visible.")}finally{b.disabled=false}}
 document.getElementById("refreshLive").onclick=loadLiveFeed;
 render();detail();
+
+document.addEventListener('click',function(event){
+  const trigger=event.target.closest('#enterApp,#walletBtn');
+  if(trigger){event.preventDefault();window.openBlitzWalletPicker();}
+});
 </script></body></html>
