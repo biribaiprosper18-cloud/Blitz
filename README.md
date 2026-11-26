@@ -1,22 +1,22 @@
-# BLITZ — Advanced Solana Terminal
+# BLITZ v0.5 — Unified site and trading workspace
 
-A mobile-responsive front-end prototype for a Solana token discovery and sniper terminal.
-
-## Included
-- Discover, Trending, New Pairs, Sniper, Wallet Tracker, Copy Trade, Portfolio and Settings views
-- Token search, filters and detail panel
-- Manual paper-buy preview and auto-sniper rule configuration
-- Local watchlist UI and copy-trade rule preview
-- Express server with `/api/health` and `/api/status`
+This release combines the Aureon-inspired BLITZ landing page and the trading workspace into one responsive application.
 
 ## Run locally
-1. Install Node.js 18 or newer.
-2. In this folder run `npm install`.
-3. Run `npm start`.
-4. Open `http://localhost:3000`.
+1. Install Node.js 18+
+2. Run `npm install`
+3. Run `npm start`
+4. Open `http://localhost:3000`
 
-## Deployment
-This repository includes `render.yaml` for a Render web service. Push the folder to a Git repository and create a new Web Service from that repository.
+## Deploy update to Render
+Upload/push this project to the Git repository connected to the existing Render service, then trigger a deploy. Keep the existing service name/domain if updating the current deployment. Do not create a second service unless you want a separate staging site.
+
+## Included
+- Landing page, responsive hero, features section
+- Connect-wallet modal preview
+- Mobile navigation drawer
+- Trading workspace with Home, Trending, New Pairs, Sniper, Meme Zone, Wallet Tracker, Copy Trade and Portfolio
+- Mobile bottom navigation and desktop sidebar
 
 ## Important limitations
-This is a UI prototype with fictional sample tokens and metrics. It does not connect to a live Solana feed, inspect on-chain token authorities, connect a wallet, or submit transactions. Paper previews are local UI behavior only. Do not enter seed phrases or private keys. Real execution should be added only with non-custodial wallet signing, explicit transaction approvals, spending caps, slippage controls and an emergency stop.
+The market feed uses fictional sample data. Phantom connection is a placeholder. There is no live Solana feed, on-chain scanner, wallet analytics or real trade execution. Never enter seed phrases or private keys. Add wallet-signed transactions only after security review, spending caps, slippage limits and emergency-stop controls are implemented.
