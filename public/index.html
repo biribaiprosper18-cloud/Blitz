@@ -226,7 +226,7 @@ main { overscroll-behavior-y:contain; }
  <div class="chart-metrics"><div class="chart-metric"><small>PRICE</small><b id="detailPrice">—</b></div><div class="chart-metric"><small>24H CHANGE</small><b id="detailChange">—</b></div><div class="chart-metric"><small>MARKET CAP / FDV</small><b id="detailMcap">—</b></div><div class="chart-metric"><small>LIQUIDITY</small><b id="detailLiquidity">—</b></div><div class="chart-metric"><small>24H VOLUME</small><b id="detailVolume">—</b></div><div class="chart-metric"><small>PAIR AGE</small><b id="detailAge">—</b></div></div>
  <div class="token-detail-mint"><div><b>Token mint</b><br><code id="detailMint">Not available</code></div><button type="button" id="copyMintBtn">Copy address</button></div>
  <div class="token-detail-mint"><div><b>Pair address</b><br><code id="detailPair">Not available</code></div><button type="button" id="copyPairBtn">Copy address</button></div>
- <div class="token-detail-actions"><button class="btn" type="button" onclick="prepareTokenOrder('buy')">Buy</button><button class="btn sell" type="button" onclick="prepareTokenOrder('sell')">Sell</button></div>
+ <div class="token-detail-actions"><button class="btn" type="button" onclick="window.openBlitzSwap('buy')">Buy</button><button class="btn sell" type="button" onclick="window.openBlitzSwap('sell')">Sell</button></div>
  <div class="token-detail-warning">Trading controls currently open a paper-order preview in Sniper. No swap is executed and no funds move from this page. Verify the mint address, liquidity and token risks before any real trade.</div>
 </div>
 <div class="panel"><div class="panelhead"><div><h2>Price chart</h2><div class="desc" id="detailChartSubtitle">Live chart from DexScreener when a pair is available.</div></div><span class="badge">LIVE CHART</span></div><div id="detailTokenChart" class="chart-placeholder">Select a token from Trending or Meme Zone.</div><a id="detailExternal" class="chart-link" href="#" target="_blank" rel="noopener noreferrer" style="display:none">Open pair on DexScreener ↗</a></div>
@@ -638,4 +638,62 @@ render();if(document.getElementById("detail"))detail();renderMemeList();bindToke
 
 
 // BLITZ 1.2.4: guard optional legacy elements removed from the minimal Home view.
-</script></body></html>
+</script>
+<div id="swapShade" class="modalShade" style="display:none;z-index:10020" aria-hidden="true"><div class="modal" style="max-width:480px;width:100%"><div class="panelhead"><h2 id="swapTitle">Swap token</h2><button class="btn" type="button" id="swapClose">Close</button></div><div class="note" style="margin:8px 0 12px">Jupiter Swap API · Solana mainnet. Review token mint, quote, fees and price impact before signing.</div><label class="field" id="swapAmountLabel">Amount (SOL)<input id="swapAmount" type="number" min="0.000001" step="any" value="0.1"></label><label class="field" id="swapDecimalsLabel" style="display:none">Token decimals<input id="swapDecimals" type="number" min="0" max="18" step="1" value="6"></label><div class="note">Jupiter applies its real-time slippage estimation to the quote. The wallet displays the transaction before approval.</div><div class="note" id="swapQuoteInfo" aria-live="polite">Connect a wallet and request a quote.</div><button class="btn wide" id="getSwapQuote" type="button">Get quote</button><button class="btn wide" id="confirmSwap" type="button" disabled style="margin-top:8px">Approve in wallet & swap</button><div class="note" id="swapResult" aria-live="polite">No transaction has been submitted.</div><a id="swapTxLink" class="chart-link" target="_blank" rel="noopener noreferrer" style="display:none">View transaction on Solscan ↗</a></div></div>
+<script>
+(function(){
+ const SOL_MINT='So11111111111111111111111111111111111111112';
+ let side='buy', tokenMint='', order=null, tokenName='token';
+ const $=id=>document.getElementById(id);
+ function openSwap(which){
+  if(!connectedAddress||!phantomProvider){alert('Connect your Solana wallet first.');return;}
+  const token=coins[chosen]||{}; tokenMint=token.address||$('detailMint')?.textContent||'';
+  if(!tokenMint||tokenMint==='Not available'){alert('This token has no verified mint address.');return;}
+  side=which;tokenName=token.n||'token';order=null;
+  $('swapTitle').textContent=(side==='buy'?'Buy ':'Sell ')+tokenName;
+  $('swapAmountLabel').innerHTML=side==='buy'?'Amount to spend (SOL)<input id="swapAmount" type="number" min="0.000001" step="any" value="0.1">':'Token amount to sell<input id="swapAmount" type="number" min="0.000001" step="any" value="1">';
+  $('swapDecimalsLabel').style.display=side==='sell'?'block':'none';
+  $('swapQuoteInfo').textContent=side==='buy'?'You will spend SOL and receive the selected token.':'You will sell the selected token and receive SOL.';
+  $('swapResult').textContent='No transaction has been submitted.';$('swapTxLink').style.display='none';$('confirmSwap').disabled=true;$('getSwapQuote').disabled=false;$('getSwapQuote').textContent='Get quote';
+  $('swapShade').style.display='flex';$('swapShade').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+ }
+ window.openBlitzSwap=openSwap;
+ $('swapClose').addEventListener('click',()=>{$('swapShade').style.display='none';$('swapShade').setAttribute('aria-hidden','true');document.body.style.overflow='';});
+ $('swapShade').addEventListener('click',e=>{if(e.target===$('swapShade'))$('swapClose').click();});
+ $('getSwapQuote').addEventListener('click',async()=>{
+  try{
+   const amount=Number($('swapAmount').value);if(!Number.isFinite(amount)||amount<=0)throw new Error('Enter a valid amount.');
+   let inputMint,outputMint,baseAmount;
+   if(side==='buy'){inputMint=SOL_MINT;outputMint=tokenMint;baseAmount=String(Math.floor(amount*1e9));}
+   else{const decimals=Number($('swapDecimals').value);if(!Number.isInteger(decimals)||decimals<0||decimals>18)throw new Error('Token decimals must be between 0 and 18.');inputMint=tokenMint;outputMint=SOL_MINT;baseAmount=String(Math.floor(amount*10**decimals));}
+   if(!baseAmount||baseAmount==='0')throw new Error('Amount is too small.');
+   $('getSwapQuote').disabled=true;$('getSwapQuote').textContent='Fetching quote…';$('swapResult').textContent='Requesting a fresh Jupiter quote…';
+   const q=new URLSearchParams({inputMint,outputMint,amount:baseAmount,taker:String(connectedAddress)});
+   const r=await fetch('/api/swap/order?'+q.toString(),{cache:'no-store'});const data=await r.json();if(!r.ok)throw new Error(data.error||'Quote failed');
+   order={...data,inputMint,outputMint,baseAmount};
+   const out=String(data.outAmount||'—');
+   $('swapQuoteInfo').textContent=`Route: ${data.router||'Jupiter'} · Expected output: ${out} base units · Fee: ${data.feeBps??'—'} bps`;
+   if(!data.transaction){$('swapResult').textContent=data.errorMessage||'Price quote received, but Jupiter could not build a transaction for this route.';$('confirmSwap').disabled=true;}
+   else{$('swapResult').textContent='Quote ready. Review carefully; the wallet will show the final transaction details.';$('confirmSwap').disabled=false;}
+  }catch(e){order=null;$('swapQuoteInfo').textContent=e.message;$('swapResult').textContent='Could not prepare quote.';$('confirmSwap').disabled=true;}
+  finally{$('getSwapQuote').disabled=false;$('getSwapQuote').textContent='Refresh quote';}
+ });
+ $('confirmSwap').addEventListener('click',async()=>{
+  if(!order?.transaction||!order?.requestId) return;
+  if(!connectedAddress||!phantomProvider?.signTransaction){$('swapResult').textContent='This connected wallet does not expose transaction signing here. Open BLITZ inside the wallet app.';return;}
+  try{
+   $('confirmSwap').disabled=true;$('confirmSwap').textContent='Waiting for wallet approval…';
+   const web3=await getSendWeb3();const bytes=Uint8Array.from(atob(order.transaction),c=>c.charCodeAt(0));
+   const tx=web3.VersionedTransaction.deserialize(bytes);const signed=await phantomProvider.signTransaction(tx);
+   const signedB64=btoa(String.fromCharCode(...signed.serialize()));
+   $('swapResult').textContent='Wallet approved. Submitting to Jupiter for execution…';
+   const r=await fetch('/api/swap/execute',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({signedTransaction:signedB64,requestId:order.requestId})});const result=await r.json();if(!r.ok)throw new Error(result.error||'Execution failed');
+   if(result.signature){$('swapTxLink').href='https://solscan.io/tx/'+encodeURIComponent(result.signature);$('swapTxLink').style.display='inline-block';}
+   if(result.status==='Success'){$('swapResult').textContent='Swap confirmed by Jupiter. Refresh your wallet balance to see the result.';order=null;loadWalletBalance();}
+   else $('swapResult').textContent='Jupiter status: '+(result.status||'Unknown')+'. '+(result.error||'Check the transaction details.');
+  }catch(e){$('swapResult').textContent='Swap not completed: '+(e.message||e)+'. If you rejected the wallet prompt, no swap was sent.';}
+  finally{$('confirmSwap').disabled=false;$('confirmSwap').textContent='Approve in wallet & swap';}
+ });
+})();
+</script>
+</body></html>
