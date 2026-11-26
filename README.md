@@ -13,3 +13,6 @@
 Upload the contents of this folder to the root of the existing GitHub repository, preserving `public/index.html` in `public/`. Commit to the branch connected to Render and wait for deployment. Check `/api/health` and confirm `version` is `1.3.0`.
 
 Charts are embedded from DexScreener and require a returned Solana pair address. Some newly created tokens may not have a chart until a liquid pair is indexed. Never enter a seed phrase or private key into BLITZ.
+
+
+Version 1.3.2 adds an iOS Safari vertical-scroll compatibility override while preserving the purple/white market UI and existing wallet/transfer code.
