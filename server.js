@@ -8,7 +8,43 @@ app.use(express.static(path.join(__dirname, 'public')));
 let marketCache = { at: 0, tokens: null };
 const CACHE_MS = 30_000;
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.7.2', mode: 'market-data-preview' }));
+
+let solPriceCache = { at: 0, data: null };
+app.get('/api/sol-price', async (_req, res) => {
+  try {
+    if (solPriceCache.data && Date.now() - solPriceCache.at < 30_000) {
+      return res.json({ ...solPriceCache.data, cached: true, updatedAt: solPriceCache.at });
+    }
+    let data = null;
+    try {
+      const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true', {
+        headers: { 'accept': 'application/json', 'user-agent': 'BLITZ-terminal/0.7.4' },
+        signal: AbortSignal.timeout(8000)
+      });
+      if (!r.ok) throw new Error(`CoinGecko returned ${r.status}`);
+      const j = await r.json();
+      if (Number.isFinite(Number(j?.solana?.usd))) {
+        data = { price: Number(j.solana.usd), change24h: Number(j.solana.usd_24h_change || 0), source: 'CoinGecko' };
+      }
+    } catch (_) {}
+    if (!data) {
+      const r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=SOLUSDT', {
+        headers: { 'accept': 'application/json' }, signal: AbortSignal.timeout(8000)
+      });
+      if (!r.ok) throw new Error(`Price providers unavailable (${r.status})`);
+      const j = await r.json();
+      data = { price: Number(j.lastPrice), change24h: Number(j.priceChangePercent || 0), source: 'Binance' };
+    }
+    if (!Number.isFinite(data.price) || data.price <= 0) throw new Error('Provider returned an invalid SOL price');
+    solPriceCache = { at: Date.now(), data };
+    res.set('Cache-Control', 'no-store');
+    res.json({ ...data, cached: false, updatedAt: solPriceCache.at });
+  } catch (error) {
+    res.status(502).json({ error: 'Live SOL price is temporarily unavailable', detail: error.message });
+  }
+});
+
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '0.7.4', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {

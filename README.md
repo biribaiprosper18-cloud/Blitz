@@ -26,3 +26,7 @@ For more reliable requests, add a Render environment variable named `SOLANA_RPC_
 
 ## Visual update
 BLITZ now uses a dark charcoal and neon-green accent palette. Wallet connection and balance functionality are unchanged.
+
+
+## Live SOL price
+The home dashboard fetches SOL/USD from CoinGecko, with Binance SOL/USDT as a fallback, caches responses for 30 seconds, and refreshes the displayed price every 60 seconds. The displayed percentage is the provider's 24-hour change. This is a market reference price, not an executable quote.
