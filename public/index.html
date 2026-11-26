@@ -108,6 +108,9 @@ main{background:#f7f7fc}
 .wallet-choice .wallet-icon{width:34px;height:34px;border-radius:9px;background:#f0efff;display:grid;place-items:center;color:#4f46e5;font-weight:800}
 .wallet-choice strong{display:block;font-size:12px}.wallet-choice small{display:block;color:#85849d;font-size:9px;margin-top:3px}
 @media(max-width:480px){.wallet-options{grid-template-columns:1fr}}
+.wallet-choice .wallet-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#f7f7fb;display:grid;place-items:center;overflow:hidden}
+.wallet-choice .wallet-icon img{width:34px;height:34px;object-fit:contain;display:block}
+.wallet-choice .wallet-icon.logo-fallback:after{content:'◈';font-size:22px;color:#4f46e5}
 </style></head><body>
 <header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
 <div class="landing" id="landing">
@@ -195,10 +198,14 @@ function getWalletProviders(){
 function getPhantomProvider(){return getWalletProviders().find(x=>x.name==='Phantom')?.provider||null;}
 function renderWalletOptions(){
   const target=document.getElementById('walletOptions'),found=getWalletProviders();
-  const options=[['Phantom','◉'],['Solflare','☀'],['Backpack','▣'],['OKX Wallet','◈'],['Coinbase Wallet','C'],['Trust Wallet','◇'],['Solana Wallet','◎']];
-  target.innerHTML=options.map(([name,icon])=>{
+  const options=[
+    ['Phantom','phantom'],['Solflare','solflare'],['Backpack','backpack'],
+    ['OKX Wallet','okx'],['Coinbase Wallet','coinbase'],['Trust Wallet','trust-wallet']
+  ];
+  target.innerHTML=options.map(([name,slug])=>{
     const available=found.some(x=>x.name===name);
-    return `<button class="wallet-choice" type="button" data-wallet-name="${name}" ${available?'':'disabled'}><span class="wallet-icon">${icon}</span><span><strong>${name}</strong><small>${available?'Detected · connect':'Not detected on this device'}</small></span></button>`;
+    const logo='https://cdn.jsdelivr.net/npm/solana-icons@0.2.2/svg/wallets/'+slug+'.svg';
+    return `<button class="wallet-choice" type="button" data-wallet-name="${name}"><span class="wallet-icon"><img src="${logo}" alt="${name} logo" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('logo-fallback')"></span><span><strong>${name}</strong><small>${available?'Detected · connect':'Open wallet app / install'}</small></span></button>`;
   }).join('');
   target.querySelectorAll('[data-wallet-name]').forEach(btn=>btn.addEventListener('click',()=>connectSelectedWallet(btn.dataset.walletName)));
   document.getElementById('walletTerms').textContent=found.length
