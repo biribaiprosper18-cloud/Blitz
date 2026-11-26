@@ -71,7 +71,7 @@ app.get('/api/sol-price', async (_req, res) => {
   });
 });
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '1.2.3', mode: 'market-data-preview' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, app: 'BLITZ', version: '1.2.4', mode: 'market-data-preview' }));
 
 app.get('/api/markets/latest', async (_req, res) => {
   try {
