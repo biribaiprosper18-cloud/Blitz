@@ -111,7 +111,38 @@ main{background:#f7f7fc}
 .wallet-choice .wallet-icon{width:46px;height:46px;flex:0 0 46px;border-radius:12px;background:#f7f7fb;display:grid;place-items:center;overflow:hidden}
 .wallet-choice .wallet-icon img{width:34px;height:34px;object-fit:contain;display:block}
 .wallet-choice .wallet-icon.logo-fallback:after{content:'◈';font-size:22px;color:#4f46e5}
-.mobilebar,nav.mobilebar{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important}\n</style></head><body>
+.mobilebar,nav.mobilebar{display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important}\n
+/* BLITZ 1.2 — calm, focused home dashboard */
+#view-home{max-width:1120px;margin:0 auto}
+.home-welcome{padding:12px 2px 25px}
+.home-welcome .label{font-size:11px;letter-spacing:2.5px}
+.home-welcome h1{font-size:clamp(30px,4vw,42px);letter-spacing:-1.4px;margin:12px 0 8px}
+.home-welcome .desc{font-size:15px;margin:0;color:#85849d}
+.home-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 22px}
+.home-stats .panel{padding:20px 21px;min-height:128px}
+.home-stats .statlabel{font-size:10px;letter-spacing:2px}
+.home-stats .statvalue{font-size:clamp(24px,3vw,32px);margin:12px 0 5px}
+.home-market{padding:20px 21px}
+.home-market .panelhead{align-items:center;margin-bottom:12px}
+.home-market .panelhead h2{font-size:20px;margin:0 0 5px}
+.home-market .panelhead .desc{font-size:12px;margin:0}
+.home-market #tokens .tokenrow:nth-child(n+4){display:none}
+.home-market .tablehead,.home-market .filters,.home-market .search{display:none!important}
+.home-market .tokenrow{padding:14px 4px}
+.home-market-footer{display:flex;justify-content:center;padding:15px 0 5px}
+.home-link{border:0;background:transparent;color:#4f46e5;font-weight:700;font-size:13px;padding:9px;cursor:pointer}
+.home-link span{font-size:18px;margin-left:5px}
+.home-market>.note{font-size:10px;margin-top:7px}
+@media(max-width:650px){
+ .home-welcome{padding:6px 0 20px}
+ .home-stats{gap:10px;margin-bottom:15px}
+ .home-stats .panel{padding:15px 13px;min-height:112px}
+ .home-stats .statvalue{font-size:23px}
+ .home-market{padding:15px 13px}
+ .home-market .panelhead{gap:8px}
+ .home-market .panelhead h2{font-size:18px}
+}
+</style></head><body>
 <header class="top"><div class="brand" id="brandHome"><div class="mark">ϟ</div><div>BLITZ<small>SOLANA TRADING</small></div></div><div class="topright"><span class="status">● PAPER MODE</span><button class="btn" id="walletBtn">Connect wallet</button><button class="hamb" id="menuBtn">☰</button></div></header>
 <div class="landing" id="landing">
 <section class="hero"><div class="orb"></div><span class="particle p1"></span><span class="particle p2"></span><span class="particle p3"></span><span class="particle p4"></span><div class="hero-inner">
@@ -127,9 +158,34 @@ main{background:#f7f7fc}
 <div id="terminal"><div class="terminalbar"><aside><div class="navtitle">WORKSPACE</div><nav class="nav">
 <button class="active" data-view="home"><i>⌂</i>Home</button><button data-view="trending"><i>↗</i>Trending</button><button data-view="newpairs"><i>✧</i>New Pairs</button><button data-view="sniper"><i>ϟ</i>Sniper</button><button data-view="meme"><i>◎</i>Meme Zone</button><div class="navtitle">INTELLIGENCE</div><button data-view="wallets"><i>⌖</i>Wallet Tracker</button><button data-view="copy"><i>▢</i>Copy Trade</button><button data-view="portfolio"><i>▤</i>Portfolio</button><button id="backLanding"><i>←</i>Back to landing</button></nav><div class="sidefoot"><b>● SIMULATION ENVIRONMENT</b><p>Sample data only. Live wallet signing and execution are not enabled.</p></div></aside>
 <main>
-<section class="view active" id="view-home"><div class="heading"><div><div class="label">MARKET OVERVIEW</div><h1>Welcome to BLITZ.</h1><div class="desc">Your Solana discovery and trading workspace.</div></div><span class="badge" id="feedStatus">SAMPLE DATA</span></div>
-<div class="stats"><div class="panel"><div class="statlabel">SOL PRICE</div><div class="statvalue" id="solPriceValue">Loading…</div><div class="statnote" id="solPriceNote">Fetching live SOL/USD price…</div></div><div class="panel"><div class="statlabel">NEW PAIRS · 1H</div><div class="statvalue">146</div><div class="statnote">Illustrative counter</div></div><div class="panel"><div class="statlabel">24H VOLUME</div><div class="statvalue">$8.42M</div><div class="statnote up">+11.8% · sample</div></div><div class="panel"><div class="statlabel">WALLET BALANCE</div><div class="statvalue">— SOL</div><div class="statnote">Not connected</div></div></div>
-<div class="columns"><div class="panel"><div class="panelhead"><h2>Market discovery</h2><div style="display:flex;gap:7px;align-items:center"><span class="badge">SOLANA</span><button class="btn" id="refreshLive" style="padding:7px 10px;font-size:10px">Load live feed</button></div></div><input class="search" id="search" placeholder="Search token, ticker or mint address"><div class="filters"><button class="active" data-filter="Trending">Trending</button><button data-filter="New">New Pairs</button><button data-filter="Movers">Top Movers</button><button data-filter="Graduating">Graduating</button></div><div class="tablehead"><span>TOKEN / ACTIVITY</span><span>MARKET CAP</span><span>VOLUME</span><span>CURVE</span></div><div id="tokens"></div><div class="note">Token names and figures are fictional placeholders, not live quotes.</div></div><div class="stack"><div class="panel" id="detail"><div class="panelhead"><h2>Token details</h2><span class="badge">SELECT TOKEN</span></div><div class="empty">Select a token to view stats and bonding curve.</div></div><div class="panel"><div class="panelhead"><h2>Safety filters</h2><span class="badge">PREVIEW</span></div><div class="switch"><span>Hide flagged tokens</span><input type="checkbox" checked></div><div class="switch"><span>Mint authority revoked</span><input type="checkbox"></div><div class="switch"><span>Freeze authority revoked</span><input type="checkbox"></div><div class="switch"><span>Minimum liquidity $5K</span><input type="checkbox"></div><div class="note">Filters become active after on-chain scanner integration.</div></div></div></div></section>
+<section class="view active" id="view-home">
+<div class="home-welcome">
+  <div class="label">YOUR SOLANA DASHBOARD</div>
+  <h1>Welcome back.</h1>
+  <p class="desc">A clear view of the market and your wallet.</p>
+</div>
+<div class="stats home-stats">
+  <div class="panel">
+    <div class="statlabel">SOL PRICE</div>
+    <div class="statvalue" id="solPriceValue">Loading…</div>
+    <div class="statnote" id="solPriceNote">Fetching live SOL/USD price…</div>
+  </div>
+  <div class="panel">
+    <div class="statlabel">YOUR WALLET</div>
+    <div class="statvalue">— SOL</div>
+    <div class="statnote">Connect a wallet to view balance</div>
+  </div>
+</div>
+<div class="panel home-market">
+  <div class="panelhead">
+    <div><h2>Market pulse</h2><p class="desc">A quick look at tokens getting attention.</p></div>
+    <button class="btn" id="refreshLive" style="padding:9px 13px;font-size:11px">Refresh</button>
+  </div>
+  <div id="tokens"></div>
+  <div class="home-market-footer"><button class="home-link" type="button" onclick="switchView('trending')">Explore all markets <span>→</span></button></div>
+  <div class="note">Market data can change quickly. Always verify token details before trading.</div>
+</div>
+</section>
 <section class="view" id="view-trending"><div class="heading"><div><div class="label">MOMENTUM RADAR</div><h1>Trending</h1><div class="desc">Tokens gaining attention across the sample feed.</div></div><span class="badge">SAMPLE RANKINGS</span></div><div class="panel"><div class="panelhead"><h2>Trending tokens</h2></div><div id="trendinglist"></div></div></section>
 <section class="view" id="view-newpairs"><div class="heading"><div><div class="label">EARLY DISCOVERY</div><h1>New Pairs</h1><div class="desc">Fresh pair activity, pool age and liquidity.</div></div></div><div class="panel" style="margin-bottom:12px">
 <div class="panelhead"><h2>Live Pump.fun launches</h2><span class="badge" id="launchStatus">CONNECTING</span></div>
