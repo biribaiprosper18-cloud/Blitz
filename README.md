@@ -115,3 +115,17 @@ The wallet picker now displays branded SVG icons for Phantom, Solflare, Backpack
 - Modal is force-layered above the page with a fixed viewport overlay and visible aria state.
 - Wallet list renderer is exposed explicitly and guards against a missing wallet options container.
 - JavaScript syntax checked with Node.
+
+
+## BLITZ 1.2.3 — aligned deployment package
+
+This archive is intentionally structured with the app files at the archive root:
+- `server.js`
+- `package.json`
+- `render.yaml`
+- `public/index.html`
+
+### GitHub deployment
+Extract this ZIP, open the extracted folder, and upload/replace its CONTENTS in the existing GitHub repository root. Do not upload the enclosing folder as a nested directory. Keep `public/index.html` inside the `public` folder.
+
+After the commit deploys, open `/api/health`. It should report version `1.2.3`. If it reports an older version, Render has not deployed this commit or is configured to use a different root/branch.
