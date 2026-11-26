@@ -83,3 +83,7 @@ For production reliability, set `SOLANA_RPC_URL` in Render to a Solana mainnet R
 - Transfer signing uses the selected provider's `signAndSendTransaction` method; availability depends on the selected wallet/provider implementation.
 - Wallets not detected in the current browser are shown disabled with guidance to open BLITZ inside that wallet's browser or install its official extension/app.
 - BLITZ never requests or stores recovery phrases or private keys.
+
+
+## 1.1.2 wallet logos
+The wallet picker now displays branded SVG icons for Phantom, Solflare, Backpack, OKX Wallet, Coinbase Wallet, and Trust Wallet using the open-source solana-icons package hosted on jsDelivr. A neutral fallback icon appears if an image cannot load.
